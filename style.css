@@ -34,19 +34,20 @@ body {
   font-size: 20px;
 }
 
-/* Buttons */
-button {
+/* Links als professionelle Buttons */
+.project-actions a {
+  display: inline-block;
+  text-decoration: none;
+  color: var(--text);
   background: linear-gradient(135deg, var(--accent), #7a82ff);
-  border: none;
-  color: white;
-  padding: 8px 14px;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: 0.2s;
+  padding: 10px 16px;
+  border-radius: 12px;
+  transition: 0.3s;
+  font-weight: 600;
 }
 
-button:hover {
-  transform: scale(1.05);
+.project-actions a:hover {
+  transform: translateY(-2px);
   opacity: 0.9;
 }
 
