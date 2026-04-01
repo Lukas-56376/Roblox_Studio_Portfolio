@@ -123,3 +123,25 @@ h2 {
     padding: 20px;
   }
 }
+
+/* Contact Button */
+.contact-button {
+  margin-top: 12px;
+}
+
+.contact-button a {
+  display: inline-block;
+  background: var(--accent);
+  color: #fff;
+  text-decoration: none;
+  padding: 10px 20px;
+  border-radius: 12px;
+  font-weight: 600;
+  transition: 0.3s;
+}
+
+.contact-button a:hover {
+  transform: translateY(-2px);
+  opacity: 0.9;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+}
