@@ -124,9 +124,9 @@ h2 {
   }
 }
 
-/* Contact Button */
 .contact-button {
   margin-top: 12px;
+  text-align: center; /* optional, damit es mittig unter Footer steht */
 }
 
 .contact-button a {
