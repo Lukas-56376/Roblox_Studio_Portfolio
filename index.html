@@ -37,7 +37,7 @@
 
       <li class="project-card">
         <h3>Lyndale Leisure Centre</h3>
-        <p>Worked on project, later resigned.</p>
+        <p>A nice Waterpark with many cool slides!</p>
         <div class="project-actions">
           <a href="https://www.roblox.com/share?code=e7cde0035ebd064c94f7192295b411d5&type=ExperienceDetails&stamp=1774806230069" target="_blank">Roblox</a>
           <a href="https://discord.gg/x7XQ4q8MCt" target="_blank">Discord</a>
@@ -55,6 +55,19 @@
 
     </ul>
   </div>
+
+    <div class="card">
+  <h2>Gallery</h2>
+  <div class="gallery">
+
+    <img src="images/project1.png" alt="">
+    <img src="images/project2.png" alt="">
+    <img src="images/project3.png" alt="">
+    <img src="images/project4.png" alt="">
+    <img src="images/project5.jpg" alt="">
+
+  </div>
+</div>
 
   <div class="card">
     <h2>Skills</h2>
@@ -83,5 +96,32 @@
   © Lukas Roblox Portfolio
 </div>
 
+<!-- LIGHTBOX -->
+<div id="lightbox" class="lightbox">
+  <span class="close">&times;</span>
+  <img class="lightbox-img" id="lightbox-img">
+</div>
+
+<script>
+const images = document.querySelectorAll(".gallery img");
+const lightbox = document.getElementById("lightbox");
+const lightboxImg = document.getElementById("lightbox-img");
+const closeBtn = document.querySelector(".close");
+
+images.forEach(img => {
+  img.addEventListener("click", () => {
+    lightbox.style.display = "flex";
+    lightboxImg.src = img.src;
+  });
+});
+
+closeBtn.addEventListener("click", () => {
+  lightbox.style.display = "none";
+});
+
+lightbox.addEventListener("click", () => {
+  lightbox.style.display = "none";
+});
+</script>
 </body>
 </html>
