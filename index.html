@@ -44,7 +44,7 @@
         </div>
       </li>
 
-<li class="project-card">
+      <li class="project-card">
         <h3>KFC | Krispy Fried Chicken</h3>
         <p>Under Development</p>
         <div class="project-actions">
@@ -56,18 +56,23 @@
     </ul>
   </div>
 
-    <div class="card">
-  <h2>Gallery</h2>
-  <div class="gallery">
-
-    <img src="project1.png" alt="">
-    <img src="project2.png" alt="">
-    <img src="project3.png" alt="">
-    <img src="project4.png" alt="">
-    <img src="project5.png" alt="">
-
+  <div class="card">
+    <h2>Gallery</h2>
+    <div class="gallery">
+      <img src="project1.png">
+      <img src="project2.png">
+      <img src="project3.png">
+      <img src="project4.png">
+      <img src="project5.png">
+      <img src="project6.png">
+      <img src="project7.png">
+      <img src="project8.png">
+      <img src="project9.png">
+      <img src="project10.png">
+      <img src="project11.png">
+      <img src="project12.png">
+    </div>
   </div>
-</div>
 
   <div class="card">
     <h2>Skills</h2>
@@ -117,11 +122,19 @@ images.forEach(img => {
 
 closeBtn.addEventListener("click", () => {
   lightbox.style.display = "none";
+  lightboxImg.classList.remove("zoomed");
 });
 
 lightbox.addEventListener("click", () => {
   lightbox.style.display = "none";
+  lightboxImg.classList.remove("zoomed");
+});
+
+lightboxImg.addEventListener("click", (e) => {
+  e.stopPropagation();
+  lightboxImg.classList.toggle("zoomed");
 });
 </script>
+
 </body>
 </html>
