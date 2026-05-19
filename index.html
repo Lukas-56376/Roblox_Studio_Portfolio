@@ -1,131 +1,215 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Developer Portfolio Lukas</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lukas — Roblox Studio Developer</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
-
 <body>
 
-<div class="top-bar">
-  <h1>Roblox Studio Portfolio </h1>
-  <a href="https://discord.com/users/1474121522376347861" target="_blank" class="contact-button">Contact</a>
-</div>
-
-<div class="container">
-
-  <div class="card">
-    <h2>About Me</h2>
-    <p>
-      Hey, I am Lukas and I am 14 years old, I have been developing in Roblox Studio for around 6 months now.
-      I am new to Developments, but I am always motivated and I want to learn.
-    </p>
-  </div>
-
-  <div class="card">
-    <h2>Projects</h2>
-    <ul class="project-list">
-
-      <li class="project-card">
-        <h3>US Air Force Base</h3>
-        <p>Unreleased concept project.</p>
-        <div class="project-actions">
-          <a href="https://youtu.be/t8nMdNApc6o?is=oT12YOR_n7XGS7JI" target="_blank">Youtube</a>
-        </div>
-      </li>
-
-      <li class="project-card">
-        <h3>Lyndale Leisure Centre</h3>
-        <p>A nice Waterpark with many cool slides!</p>
-        <div class="project-actions">
-          <a href="https://www.roblox.com/share?code=e7cde0035ebd064c94f7192295b411d5&type=ExperienceDetails&stamp=1774806230069" target="_blank">Roblox</a>
-          <a href="https://discord.gg/x7XQ4q8MCt" target="_blank">Discord</a>
-        </div>
-      </li>
-
+  <!-- Navigation -->
+  <nav>
+    <div class="nav-logo">LK<span>.</span>DEV</div>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#gallery">Gallery</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#goals">Goals</a></li>
     </ul>
-  </div>
+  </nav>
 
-  <div class="card">
-    <h2>Gallery</h2>
-    <div class="gallery">
-      <img src="project1.png">
-      <img src="project2.png">
-      <img src="project3.png">
-      <img src="project4.png">
-      <img src="project5.png">
-      <img src="project6.png">
-      <img src="project7.png">
-      <img src="project8.png">
-      <img src="project9.png">
-      <img src="project10.png">
-      <img src="project11.png">
-      <img src="project12.png">
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-badge">Available for Projects</div>
+    <h1>Roblox Studio<br><span class="highlight">Developer</span></h1>
+    <p class="hero-sub">
+      Hey, I'm Lukas — a motivated developer building immersive Roblox experiences.
+      6 months in and always learning, always creating.
+    </p>
+    <div class="hero-cta">
+      <a href="https://discord.com/users/1474121522376347861" target="_blank" class="btn btn-primary">
+        ↗ Contact on Discord
+      </a>
+      <a href="#projects" class="btn btn-ghost">View Projects</a>
     </div>
   </div>
 
-  <div class="card">
-    <h2>Skills</h2>
-    <div class="tag">Building</div>
-    <div class="tag">Scripting </div>
-    <div class="tag">Bug Fixing</div>
-    <div class="tag">GUI creation</div>
+  <!-- About -->
+  <section id="about">
+    <div class="section-label">01 / About</div>
+    <h2 class="section-title">Who I Am</h2>
+    <div class="about-card reveal">
+      <p>
+        Hey, I am Lukas and I am 14 years old. I have been developing in Roblox Studio for around 6 months now.
+        I am new to development, but I am always motivated and I want to learn. Every project is a step forward —
+        and I'm committed to becoming a better developer with every build.
+      </p>
+    </div>
+  </section>
+
+  <!-- Projects -->
+  <section id="projects">
+    <div class="section-label">02 / Projects</div>
+    <h2 class="section-title">My Work</h2>
+    <div class="projects-grid">
+
+      <div class="project-card reveal">
+        <div class="project-number">Project 01</div>
+        <div class="project-status status-unreleased">Unreleased</div>
+        <h3>US Air Force Base</h3>
+        <p>An ambitious concept project set on a military air force base. Built to explore large-scale map design and immersive environmental storytelling.</p>
+        <div class="project-links">
+          <a href="https://youtu.be/t8nMdNApc6o?is=oT12YOR_n7XGS7JI" target="_blank" class="link-chip">▶ YouTube</a>
+        </div>
+      </div>
+
+      <div class="project-card reveal">
+        <div class="project-number">Project 02</div>
+        <div class="project-status status-live">Live</div>
+        <h3>Lyndale Leisure Centre</h3>
+        <p>A vibrant waterpark featuring many cool slides and interactive attractions. A full leisure experience built for fun and replayability.</p>
+        <div class="project-links">
+          <a href="https://www.roblox.com/share?code=e7cde0035ebd064c94f7192295b411d5&type=ExperienceDetails&stamp=1774806230069" target="_blank" class="link-chip">🎮 Roblox</a>
+          <a href="https://discord.gg/x7XQ4q8MCt" target="_blank" class="link-chip">💬 Discord</a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Gallery -->
+  <section id="gallery">
+    <div class="section-label">03 / Gallery</div>
+    <h2 class="section-title">Screenshots</h2>
+    <div class="gallery-grid">
+      <div class="gallery-item reveal" onclick="openLightbox('https://lukas-56376.github.io/Roblox_Studio_Portfolio/project1.png')">
+        <img src="https://lukas-56376.github.io/Roblox_Studio_Portfolio/project1.png" alt="Project screenshot 1" loading="lazy" />
+      </div>
+      <div class="gallery-item reveal" onclick="openLightbox('https://lukas-56376.github.io/Roblox_Studio_Portfolio/project2.png')">
+        <img src="https://lukas-56376.github.io/Roblox_Studio_Portfolio/project2.png" alt="Project screenshot 2" loading="lazy" />
+      </div>
+      <div class="gallery-item reveal" onclick="openLightbox('https://lukas-56376.github.io/Roblox_Studio_Portfolio/project3.png')">
+        <img src="https://lukas-56376.github.io/Roblox_Studio_Portfolio/project3.png" alt="Project screenshot 3" loading="lazy" />
+      </div>
+      <div class="gallery-item reveal" onclick="openLightbox('https://lukas-56376.github.io/Roblox_Studio_Portfolio/project4.png')">
+        <img src="https://lukas-56376.github.io/Roblox_Studio_Portfolio/project4.png" alt="Project screenshot 4" loading="lazy" />
+      </div>
+      <div class="gallery-item reveal" onclick="openLightbox('https://lukas-56376.github.io/Roblox_Studio_Portfolio/project5.png')">
+        <img src="https://lukas-56376.github.io/Roblox_Studio_Portfolio/project5.png" alt="Project screenshot 5" loading="lazy" />
+      </div>
+      <div class="gallery-item reveal" onclick="openLightbox('https://lukas-56376.github.io/Roblox_Studio_Portfolio/project6.png')">
+        <img src="https://lukas-56376.github.io/Roblox_Studio_Portfolio/project6.png" alt="Project screenshot 6" loading="lazy" />
+      </div>
+      <div class="gallery-item reveal" onclick="openLightbox('https://lukas-56376.github.io/Roblox_Studio_Portfolio/project7.png')">
+        <img src="https://lukas-56376.github.io/Roblox_Studio_Portfolio/project7.png" alt="Project screenshot 7" loading="lazy" />
+      </div>
+      <div class="gallery-item reveal" onclick="openLightbox('https://lukas-56376.github.io/Roblox_Studio_Portfolio/project8.png')">
+        <img src="https://lukas-56376.github.io/Roblox_Studio_Portfolio/project8.png" alt="Project screenshot 8" loading="lazy" />
+      </div>
+      <div class="gallery-item reveal" onclick="openLightbox('https://lukas-56376.github.io/Roblox_Studio_Portfolio/project9.png')">
+        <img src="https://lukas-56376.github.io/Roblox_Studio_Portfolio/project9.png" alt="Project screenshot 9" loading="lazy" />
+      </div>
+      <div class="gallery-item reveal" onclick="openLightbox('https://lukas-56376.github.io/Roblox_Studio_Portfolio/project10.png')">
+        <img src="https://lukas-56376.github.io/Roblox_Studio_Portfolio/project10.png" alt="Project screenshot 10" loading="lazy" />
+      </div>
+      <div class="gallery-item reveal" onclick="openLightbox('https://lukas-56376.github.io/Roblox_Studio_Portfolio/project11.png')">
+        <img src="https://lukas-56376.github.io/Roblox_Studio_Portfolio/project11.png" alt="Project screenshot 11" loading="lazy" />
+      </div>
+      <div class="gallery-item reveal" onclick="openLightbox('https://lukas-56376.github.io/Roblox_Studio_Portfolio/project12.png')">
+        <img src="https://lukas-56376.github.io/Roblox_Studio_Portfolio/project12.png" alt="Project screenshot 12" loading="lazy" />
+      </div>
+    </div>
+  </section>
+
+  <!-- Skills -->
+  <section id="skills">
+    <div class="section-label">04 / Skills</div>
+    <h2 class="section-title">Capabilities</h2>
+    <div class="skills-layout">
+
+      <div class="skills-group reveal">
+        <h3>Core Skills</h3>
+        <div class="skill-list">
+          <div class="skill-item">Building</div>
+          <div class="skill-item">Scripting</div>
+          <div class="skill-item">Bug Fixing</div>
+          <div class="skill-item">GUI Creation</div>
+        </div>
+      </div>
+
+      <div class="skills-group reveal">
+        <h3>Systems Setup</h3>
+        <div class="system-tags">
+          <span class="system-tag">Adonis</span>
+          <span class="system-tag">DRS</span>
+          <span class="system-tag">JSM</span>
+          <span class="system-tag">EAS</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Goals -->
+  <section id="goals">
+    <div class="section-label">05 / Goals</div>
+    <h2 class="section-title">Where I'm Headed</h2>
+    <div class="goals-card reveal">
+      <div class="goals-list">
+        <div class="goal-item">
+          <div class="goal-icon">✦</div>
+          Improve GUI design skills and create more polished interfaces
+        </div>
+        <div class="goal-item">
+          <div class="goal-icon">✦</div>
+          Work on bigger and more ambitious Roblox projects
+        </div>
+        <div class="goal-item">
+          <div class="goal-icon">✦</div>
+          Gain real experience in professional development teams
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-logo">LK.DEV — Roblox Studio Portfolio</div>
+    <div class="footer-copy">© Lukas Roblox Portfolio</div>
+  </footer>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox" onclick="closeLightbox()">
+    <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+    <img id="lightbox-img" src="" alt="Gallery image" />
   </div>
 
-  <div class="card">
-    <h2>Systems setup</h2>
-    <p>Adonis • DRS • JSM • EAS</p>
-  </div>
+  <script>
+    // Scroll reveal
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((e, i) => {
+        if (e.isIntersecting) {
+          setTimeout(() => e.target.classList.add('visible'), i * 60);
+        }
+      });
+    }, { threshold: 0.1 });
 
-  <div class="card">
-    <h2>Goals</h2>
-    <p>
-      Improve GUI skills, work on bigger Roblox projects,
-      and gain experience in development teams.
-    </p>
-  </div>
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-</div>
-
-<div class="footer">
-  © Lukas Roblox Portfolio
-</div>
-
-<!-- LIGHTBOX -->
-<div id="lightbox" class="lightbox">
-  <span class="close">&times;</span>
-  <img class="lightbox-img" id="lightbox-img">
-</div>
-
-<script>
-const images = document.querySelectorAll(".gallery img");
-const lightbox = document.getElementById("lightbox");
-const lightboxImg = document.getElementById("lightbox-img");
-const closeBtn = document.querySelector(".close");
-
-images.forEach(img => {
-  img.addEventListener("click", () => {
-    lightbox.style.display = "flex";
-    lightboxImg.src = img.src;
-  });
-});
-
-closeBtn.addEventListener("click", () => {
-  lightbox.style.display = "none";
-  lightboxImg.classList.remove("zoomed");
-});
-
-lightbox.addEventListener("click", () => {
-  lightbox.style.display = "none";
-  lightboxImg.classList.remove("zoomed");
-});
-
-lightboxImg.addEventListener("click", (e) => {
-  e.stopPropagation();
-  lightboxImg.classList.toggle("zoomed");
-});
-</script>
+    // Lightbox
+    function openLightbox(src) {
+      document.getElementById('lightbox-img').src = src;
+      document.getElementById('lightbox').classList.add('active');
+    }
+    function closeLightbox() {
+      document.getElementById('lightbox').classList.remove('active');
+    }
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') closeLightbox();
+    });
+  </script>
 
 </body>
 </html>
