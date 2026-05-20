@@ -272,6 +272,7 @@ section {
   transition: opacity 0.4s;
   pointer-events: none;
 }
+
 .project-card:hover {
   border-color: rgba(0, 220, 255, 0.35);
   transform: translateY(-4px);
@@ -323,13 +324,7 @@ section {
 }
 
 /* FIX: z-index: 2 stellt sicher, dass Links über dem Overlay liegen */
-.project-links {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  position: relative;
-  z-index: 2;
-}
+.project-links { display: flex; gap: 10px; flex-wrap: wrap; position: relative; z-index: 2; }
 
 .link-chip {
   display: inline-flex;
