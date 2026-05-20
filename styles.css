@@ -553,9 +553,4 @@ footer {
   footer { padding: 28px 22px; }
 }
 
-.project-clickable {
-  display: block;
-  text-decoration: none;
-  color: inherit;
-  cursor: pointer;
-}
+
