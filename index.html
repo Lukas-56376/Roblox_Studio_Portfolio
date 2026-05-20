@@ -8,6 +8,7 @@
 </head>
 <body>
 
+  <!-- Navigation -->
   <nav>
     <div class="nav-logo">LUK<span>.</span>DEVX</div>
     <ul class="nav-links">
@@ -19,6 +20,7 @@
     </ul>
   </nav>
 
+  <!-- Hero -->
   <div class="hero">
     <div class="hero-badge">Available for Projects</div>
     <h1>Roblox Studio<br><span class="highlight">Developer</span></h1>
@@ -27,16 +29,17 @@
       6 months in and always learning, always creating.
     </p>
     <div class="hero-cta">
-      <a href="https://discord.com/users/1474121522376347861" target="_blank" rel="noopener noreferrer" class="btn btn-primary">
+      <a href="https://discord.com/users/1474121522376347861" target="_blank" class="btn btn-primary">
         ↗ Contact on Discord
       </a>
       <a href="#projects" class="btn btn-ghost">View Projects</a>
     </div>
   </div>
 
+  <!-- About -->
   <section id="about">
     <div class="section-label">01 / About</div>
-    <h2 class="section-title">Who Am I</h2>
+    <h2 class="section-title">Who I Am</h2>
     <div class="about-card reveal">
       <p>
         Hey, I am Lukas and I am 14 years old. I have been developing in Roblox Studio for around 6 months now.
@@ -46,6 +49,7 @@
     </div>
   </section>
 
+  <!-- Projects -->
   <section id="projects">
     <div class="section-label">02 / Projects</div>
     <h2 class="section-title">My Work</h2>
@@ -57,7 +61,7 @@
         <h3>US Air Force Base</h3>
         <p>An ambitious concept project set on a military air force base. Built to explore large-scale map design and immersive environmental storytelling.</p>
         <div class="project-links">
-          <a href="https://youtu.be/t8nMdNApc6o?is=oT12YOR_n7XGS7JI" target="_blank" rel="noopener noreferrer" class="link-chip">▶ YouTube</a>
+          <a href="https://youtu.be/t8nMdNApc6o?is=oT12YOR_n7XGS7JI" target="_blank" class="link-chip">▶ YouTube</a>
         </div>
       </div>
 
@@ -67,14 +71,15 @@
         <h3>Lyndale Leisure Centre</h3>
         <p>A vibrant waterpark featuring many cool slides and interactive attractions. A full leisure experience built for fun and replayability.</p>
         <div class="project-links">
-          <a href="https://www.roblox.com/share?code=e7cde0035ebd064c94f7192295b411d5&type=ExperienceDetails&stamp=1774806230069" target="_blank" rel="noopener noreferrer" class="link-chip">🎮 Roblox</a>
-          <a href="https://discord.gg/x7XQ4q8MCt" target="_blank" rel="noopener noreferrer" class="link-chip">💬 Discord</a>
+          <a href="https://www.roblox.com/share?code=e7cde0035ebd064c94f7192295b411d5&type=ExperienceDetails&stamp=1774806230069" target="_blank" class="link-chip">🎮 Roblox</a>
+          <a href="https://discord.gg/x7XQ4q8MCt" target="_blank" class="link-chip">💬 Discord</a>
         </div>
       </div>
 
     </div>
   </section>
 
+  <!-- Gallery -->
   <section id="gallery">
     <div class="section-label">03 / Gallery</div>
     <h2 class="section-title">Screenshots</h2>
@@ -118,10 +123,12 @@
     </div>
   </section>
 
+  <!-- Skills -->
   <section id="skills">
     <div class="section-label">04 / Skills</div>
     <h2 class="section-title">Capabilities</h2>
     <div class="skills-layout">
+
       <div class="skills-group reveal">
         <h3>Core Skills</h3>
         <div class="skill-list">
@@ -131,6 +138,7 @@
           <div class="skill-item">GUI Creation</div>
         </div>
       </div>
+
       <div class="skills-group reveal">
         <h3>Systems Setup</h3>
         <div class="system-tags">
@@ -140,9 +148,11 @@
           <span class="system-tag">EAS</span>
         </div>
       </div>
+
     </div>
   </section>
 
+  <!-- Goals -->
   <section id="goals">
     <div class="section-label">05 / Goals</div>
     <h2 class="section-title">Where I'm Headed</h2>
@@ -164,17 +174,20 @@
     </div>
   </section>
 
+  <!-- Footer -->
   <footer>
     <div class="footer-logo">LUK.DEVX — Roblox Studio Portfolio</div>
     <div class="footer-copy">© Swat78362747937 Roblox Portfolio</div>
   </footer>
 
+  <!-- Lightbox -->
   <div class="lightbox" id="lightbox" onclick="closeLightbox()">
     <button class="lightbox-close" onclick="closeLightbox()">✕</button>
     <img id="lightbox-img" src="" alt="Gallery image" />
   </div>
 
   <script>
+    // Scroll reveal
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((e, i) => {
         if (e.isIntersecting) {
@@ -185,6 +198,7 @@
 
     document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
+    // Lightbox
     function openLightbox(src) {
       document.getElementById('lightbox-img').src = src;
       document.getElementById('lightbox').classList.add('active');
