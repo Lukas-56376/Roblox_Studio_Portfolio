@@ -6,763 +6,248 @@
   <title>System Maintenance — LUK.DEVX</title>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet" />
   <style>
-    /* ============================================================
-       LUK.DEVX — ADMIN PANEL
-       Disguised as "System Maintenance Page"
-    ============================================================ */
     :root {
-      --bg:       #080b12;
-      --bg2:      #0d1220;
-      --bg3:      #111827;
-      --surface:  #141c2e;
-      --surface2: #1a2438;
-      --border:   #1e2d47;
-      --border2:  #243552;
-      --neon:     #00d4ff;
-      --neon2:    #ff3c78;
-      --neon3:    #7c3aed;
-      --green:    #00ff88;
-      --gold:     #f59e0b;
-      --red:      #ef4444;
-      --text:     #c8d6e8;
-      --muted:    #4a6080;
-      --white:    #eef4ff;
-      --radius:   10px;
-      --tr:       all 0.25s cubic-bezier(0.4,0,0.2,1);
+      --bg:#080b12;--bg2:#0d1220;--bg3:#111827;--surface:#141c2e;--surface2:#1a2438;
+      --border:#1e2d47;--border2:#243552;--neon:#00d4ff;--neon2:#ff3c78;--neon3:#7c3aed;
+      --green:#00ff88;--gold:#f59e0b;--red:#ef4444;--text:#c8d6e8;--muted:#4a6080;
+      --white:#eef4ff;--radius:10px;--tr:all 0.25s cubic-bezier(0.4,0,0.2,1);
     }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    body{background:var(--bg);color:var(--text);font-family:'Rajdhani',sans-serif;font-size:15px;min-height:100vh;overflow-x:hidden;}
+    body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 70% 50% at 0% 0%,rgba(124,58,237,0.08) 0%,transparent 60%),radial-gradient(ellipse 50% 40% at 100% 100%,rgba(0,212,255,0.07) 0%,transparent 60%);pointer-events:none;z-index:0;}
+    body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,212,255,0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,0.02) 1px,transparent 1px);background-size:48px 48px;pointer-events:none;z-index:0;}
+    ::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-track{background:var(--bg2);}::-webkit-scrollbar-thumb{background:linear-gradient(var(--neon3),var(--neon));border-radius:3px;}
+    ::selection{background:rgba(0,212,255,0.2);color:var(--white);}
 
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    /* ── FULLSCREEN OVERLAYS ── */
+    .overlay{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;background:var(--bg);gap:0;}
+    .overlay.hidden{display:none;}
 
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'Rajdhani', sans-serif;
-      font-size: 15px;
-      min-height: 100vh;
-      overflow-x: hidden;
-    }
+    /* lock */
+    .lock-ring{width:90px;height:90px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;position:relative;animation:ringPulse 3s ease-in-out infinite;margin-bottom:40px;}
+    .lock-ring::before{content:'';position:absolute;inset:-8px;border-radius:50%;border:1px solid rgba(0,212,255,0.15);animation:ringPulse 3s ease-in-out infinite reverse;}
+    .lock-icon{font-size:32px;filter:drop-shadow(0 0 12px rgba(0,212,255,0.5));}
+    @keyframes ringPulse{0%,100%{border-color:var(--border);box-shadow:none;}50%{border-color:rgba(0,212,255,0.4);box-shadow:0 0 20px rgba(0,212,255,0.15);}}
+    .lock-label{font-family:'Orbitron',sans-serif;font-size:0.65rem;letter-spacing:0.25em;color:var(--muted);text-transform:uppercase;margin-bottom:8px;}
+    .lock-title{font-family:'Orbitron',sans-serif;font-size:1.4rem;font-weight:900;color:var(--white);letter-spacing:0.06em;margin-bottom:6px;}
+    .lock-sub{font-size:0.9rem;color:var(--muted);margin-bottom:40px;letter-spacing:0.03em;}
+    .pin-dots{display:flex;gap:14px;justify-content:center;margin-bottom:28px;}
+    .pin-dot{width:14px;height:14px;border-radius:50%;border:2px solid var(--border2);background:transparent;transition:var(--tr);}
+    .pin-dot.filled{background:var(--neon);border-color:var(--neon);box-shadow:0 0 10px rgba(0,212,255,0.5);}
+    .pin-dot.error{background:var(--red);border-color:var(--red);box-shadow:0 0 10px rgba(239,68,68,0.5);animation:shake 0.3s ease;}
+    @keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-5px);}75%{transform:translateX(5px);}}
+    .numpad{display:grid;grid-template-columns:repeat(3,60px);gap:10px;}
+    .num-btn{width:60px;height:60px;background:var(--surface);border:1px solid var(--border);border-radius:10px;color:var(--white);font-family:'Orbitron',sans-serif;font-size:1.1rem;font-weight:700;cursor:pointer;transition:var(--tr);display:flex;align-items:center;justify-content:center;}
+    .num-btn:hover{background:var(--surface2);border-color:var(--neon);box-shadow:0 0 15px rgba(0,212,255,0.2);color:var(--neon);}
+    .num-btn:active{transform:scale(0.92);}
+    .num-btn.del{font-size:0.8rem;color:var(--muted);}
+    .num-btn.del:hover{color:var(--red);border-color:var(--red);}
+    .num-btn.zero{grid-column:2;}
+    .lock-error{margin-top:20px;font-family:'Share Tech Mono',monospace;font-size:0.75rem;color:var(--red);letter-spacing:0.08em;opacity:0;transition:opacity 0.3s;}
+    .lock-error.show{opacity:1;}
 
-    body::before {
-      content: '';
-      position: fixed; inset: 0;
-      background:
-        radial-gradient(ellipse 70% 50% at 0% 0%, rgba(124,58,237,0.08) 0%, transparent 60%),
-        radial-gradient(ellipse 50% 40% at 100% 100%, rgba(0,212,255,0.07) 0%, transparent 60%);
-      pointer-events: none; z-index: 0;
-    }
-    body::after {
-      content: '';
-      position: fixed; inset: 0;
-      background-image:
-        linear-gradient(rgba(0,212,255,0.02) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0,212,255,0.02) 1px, transparent 1px);
-      background-size: 48px 48px;
-      pointer-events: none; z-index: 0;
-    }
+    /* setup screen */
+    .setup-box{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:36px 40px;width:100%;max-width:480px;position:relative;z-index:1;}
+    .setup-logo{font-family:'Orbitron',sans-serif;font-size:1.1rem;font-weight:900;background:linear-gradient(135deg,var(--neon),var(--neon3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:6px;letter-spacing:0.06em;}
+    .setup-sub{font-size:0.8rem;color:var(--muted);margin-bottom:28px;letter-spacing:0.04em;}
+    .setup-step{font-family:'Orbitron',sans-serif;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--neon);margin-bottom:20px;}
+    .setup-hint{font-size:0.78rem;color:var(--muted);margin-top:6px;line-height:1.5;}
+    .setup-hint a{color:var(--neon);text-decoration:none;}
+    .setup-hint a:hover{text-decoration:underline;}
 
-    ::-webkit-scrollbar { width: 5px; }
-    ::-webkit-scrollbar-track { background: var(--bg2); }
-    ::-webkit-scrollbar-thumb { background: linear-gradient(var(--neon3), var(--neon)); border-radius: 3px; }
-    ::selection { background: rgba(0,212,255,0.2); color: var(--white); }
+    /* ── LAYOUT ── */
+    #app{display:none;min-height:100vh;position:relative;z-index:1;}
+    #app.visible{display:flex;}
+    .sidebar{width:220px;min-height:100vh;background:rgba(13,18,32,0.95);border-right:1px solid var(--border);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto;flex-shrink:0;}
+    .sidebar-logo{padding:24px 20px 20px;border-bottom:1px solid var(--border);}
+    .sidebar-logo .logo-name{font-family:'Orbitron',sans-serif;font-size:1rem;font-weight:900;background:linear-gradient(135deg,var(--neon),var(--neon3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:0.06em;}
+    .sidebar-logo .logo-sub{font-size:0.7rem;color:var(--muted);letter-spacing:0.12em;text-transform:uppercase;margin-top:2px;}
+    .sidebar-section{padding:16px 12px 4px;}
+    .sidebar-section-label{font-size:0.62rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);padding:0 8px;margin-bottom:6px;}
+    .nav-btn{width:100%;display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;border:none;background:transparent;color:var(--text);font-family:'Rajdhani',sans-serif;font-size:0.9rem;font-weight:600;letter-spacing:0.04em;cursor:pointer;transition:var(--tr);text-align:left;margin-bottom:2px;}
+    .nav-btn .nav-icon{font-size:1rem;width:20px;text-align:center;}
+    .nav-btn:hover{background:var(--surface);color:var(--white);}
+    .nav-btn.active{background:rgba(0,212,255,0.1);color:var(--neon);border:1px solid rgba(0,212,255,0.15);}
+    .sidebar-bottom{margin-top:auto;padding:16px 12px;border-top:1px solid var(--border);}
+    .logout-btn{width:100%;padding:9px 12px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:'Rajdhani',sans-serif;font-size:0.85rem;font-weight:600;letter-spacing:0.06em;cursor:pointer;transition:var(--tr);display:flex;align-items:center;gap:8px;text-transform:uppercase;}
+    .logout-btn:hover{background:rgba(239,68,68,0.1);border-color:var(--red);color:var(--red);}
+    .main-content{flex:1;min-height:100vh;overflow-y:auto;}
+    .topbar{display:flex;align-items:center;justify-content:space-between;padding:18px 32px;border-bottom:1px solid var(--border);background:rgba(8,11,18,0.7);backdrop-filter:blur(10px);position:sticky;top:0;z-index:50;}
+    .topbar-title{font-family:'Orbitron',sans-serif;font-size:0.85rem;font-weight:700;color:var(--white);letter-spacing:0.08em;text-transform:uppercase;}
+    .topbar-right{display:flex;align-items:center;gap:16px;}
+    .topbar-status{display:flex;align-items:center;gap:8px;font-size:0.75rem;color:var(--green);font-family:'Share Tech Mono',monospace;}
+    .status-dot{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green);animation:blink 2s ease-in-out infinite;}
+    .gh-badge{display:flex;align-items:center;gap:6px;font-size:0.72rem;font-family:'Share Tech Mono',monospace;color:var(--muted);background:var(--surface);border:1px solid var(--border);padding:4px 10px;border-radius:6px;}
+    .gh-badge.connected{color:var(--green);border-color:rgba(0,255,136,0.2);}
+    @keyframes blink{0%,100%{opacity:1;}50%{opacity:0.3;}}
+    .page{display:none;padding:32px;}
+    .page.active{display:block;}
 
-    /* ========== LOCK SCREEN ========== */
-    #lockScreen {
-      position: fixed; inset: 0;
-      background: var(--bg);
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      z-index: 9999;
-      gap: 0;
-    }
+    /* ── CARDS ── */
+    .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px 28px;margin-bottom:20px;transition:var(--tr);}
+    .card:hover{border-color:var(--border2);}
+    .card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
+    .card-title{font-family:'Orbitron',sans-serif;font-size:0.78rem;font-weight:700;color:var(--white);letter-spacing:0.1em;text-transform:uppercase;display:flex;align-items:center;gap:8px;}
+    .card-title::before{content:'';display:inline-block;width:3px;height:14px;background:linear-gradient(var(--neon2),var(--neon));border-radius:2px;}
+    .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px;}
+    .stat-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;position:relative;overflow:hidden;transition:var(--tr);}
+    .stat-box::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--neon),var(--neon3));}
+    .stat-box:hover{border-color:var(--border2);transform:translateY(-2px);}
+    .stat-num{font-family:'Orbitron',sans-serif;font-size:1.8rem;font-weight:900;color:var(--neon);line-height:1;margin-bottom:6px;}
+    .stat-label{font-size:0.78rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;}
 
-    .lock-visual {
-      margin-bottom: 40px;
-      position: relative;
-    }
-    .lock-ring {
-      width: 90px; height: 90px;
-      border-radius: 50%;
-      border: 2px solid var(--border);
-      display: flex; align-items: center; justify-content: center;
-      position: relative;
-      animation: ringPulse 3s ease-in-out infinite;
-    }
-    .lock-ring::before {
-      content: '';
-      position: absolute; inset: -8px;
-      border-radius: 50%;
-      border: 1px solid rgba(0,212,255,0.15);
-      animation: ringPulse 3s ease-in-out infinite reverse;
-    }
-    .lock-icon {
-      font-size: 32px;
-      filter: drop-shadow(0 0 12px rgba(0,212,255,0.5));
-    }
-    @keyframes ringPulse {
-      0%,100% { border-color: var(--border); box-shadow: none; }
-      50% { border-color: rgba(0,212,255,0.4); box-shadow: 0 0 20px rgba(0,212,255,0.15); }
-    }
+    /* ── FORMS ── */
+    .form-group{margin-bottom:16px;}
+    .form-label{display:block;font-size:0.75rem;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;}
+    .form-input,.form-select,.form-textarea{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:8px;color:var(--white);font-family:'Rajdhani',sans-serif;font-size:0.95rem;padding:10px 14px;outline:none;transition:var(--tr);}
+    .form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--neon);box-shadow:0 0 0 3px rgba(0,212,255,0.08);}
+    .form-textarea{resize:vertical;min-height:80px;}
+    .form-select option{background:var(--bg2);}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+    .token-input-wrap{position:relative;}
+    .token-input-wrap .form-input{padding-right:44px;font-family:'Share Tech Mono',monospace;font-size:0.85rem;}
+    .token-eye{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--muted);cursor:pointer;font-size:1rem;transition:var(--tr);}
+    .token-eye:hover{color:var(--neon);}
 
-    .lock-label {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 0.65rem;
-      letter-spacing: 0.25em;
-      color: var(--muted);
-      text-transform: uppercase;
-      margin-bottom: 8px;
-      text-align: center;
-    }
-    .lock-title {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 1.4rem;
-      font-weight: 900;
-      color: var(--white);
-      letter-spacing: 0.06em;
-      text-align: center;
-      margin-bottom: 6px;
-    }
-    .lock-sub {
-      font-size: 0.9rem;
-      color: var(--muted);
-      text-align: center;
-      margin-bottom: 40px;
-      letter-spacing: 0.03em;
-    }
+    /* ── BUTTONS ── */
+    .btn{display:inline-flex;align-items:center;gap:7px;padding:9px 20px;border-radius:8px;border:none;font-family:'Orbitron',sans-serif;font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;transition:var(--tr);}
+    .btn-primary{background:linear-gradient(135deg,var(--neon),var(--neon3));color:#fff;box-shadow:0 0 20px rgba(0,212,255,0.25);}
+    .btn-primary:hover{transform:translateY(-2px);box-shadow:0 0 30px rgba(0,212,255,0.4);filter:brightness(1.1);}
+    .btn-primary:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
+    .btn-danger{background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.4);color:var(--red);}
+    .btn-danger:hover{background:rgba(239,68,68,0.25);box-shadow:0 0 15px rgba(239,68,68,0.2);}
+    .btn-ghost{background:transparent;border:1px solid var(--border);color:var(--text);}
+    .btn-ghost:hover{border-color:var(--neon);color:var(--neon);}
+    .btn-success{background:rgba(0,255,136,0.15);border:1px solid rgba(0,255,136,0.3);color:var(--green);}
+    .btn-success:hover{background:rgba(0,255,136,0.25);}
+    .btn-sm{padding:6px 12px;font-size:0.6rem;}
+    .btn:active{transform:scale(0.96);}
 
-    .pin-dots {
-      display: flex; gap: 14px;
-      justify-content: center;
-      margin-bottom: 28px;
-    }
-    .pin-dot {
-      width: 14px; height: 14px;
-      border-radius: 50%;
-      border: 2px solid var(--border2);
-      background: transparent;
-      transition: var(--tr);
-    }
-    .pin-dot.filled {
-      background: var(--neon);
-      border-color: var(--neon);
-      box-shadow: 0 0 10px rgba(0,212,255,0.5);
-    }
-    .pin-dot.error {
-      background: var(--red);
-      border-color: var(--red);
-      box-shadow: 0 0 10px rgba(239,68,68,0.5);
-      animation: shake 0.3s ease;
-    }
-    @keyframes shake {
-      0%,100% { transform: translateX(0); }
-      25% { transform: translateX(-5px); }
-      75% { transform: translateX(5px); }
-    }
+    /* ── DEPLOY BUTTON ── */
+    .deploy-bar{background:rgba(0,255,136,0.05);border:1px solid rgba(0,255,136,0.2);border-radius:var(--radius);padding:16px 20px;display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;gap:12px;flex-wrap:wrap;}
+    .deploy-bar-text{font-size:0.88rem;color:var(--text);}
+    .deploy-bar-text strong{color:var(--green);}
+    #deployBtn{min-width:160px;}
+    .deploy-status{font-family:'Share Tech Mono',monospace;font-size:0.75rem;margin-top:10px;padding:10px 14px;border-radius:8px;background:var(--bg2);border:1px solid var(--border);display:none;white-space:pre-wrap;line-height:1.7;}
+    .deploy-status.show{display:block;}
+    .deploy-status.ok{border-color:rgba(0,255,136,0.3);color:var(--green);}
+    .deploy-status.err{border-color:rgba(239,68,68,0.3);color:var(--red);}
 
-    .numpad {
-      display: grid;
-      grid-template-columns: repeat(3, 60px);
-      gap: 10px;
-    }
-    .num-btn {
-      width: 60px; height: 60px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      color: var(--white);
-      font-family: 'Orbitron', sans-serif;
-      font-size: 1.1rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: var(--tr);
-      display: flex; align-items: center; justify-content: center;
-    }
-    .num-btn:hover {
-      background: var(--surface2);
-      border-color: var(--neon);
-      box-shadow: 0 0 15px rgba(0,212,255,0.2);
-      color: var(--neon);
-    }
-    .num-btn:active { transform: scale(0.92); }
-    .num-btn.del { font-size: 0.8rem; color: var(--muted); }
-    .num-btn.del:hover { color: var(--red); border-color: var(--red); box-shadow: 0 0 15px rgba(239,68,68,0.2); }
-    .num-btn.zero { grid-column: 2; }
+    /* ── PROJECTS ── */
+    .project-item{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:18px 22px;margin-bottom:12px;display:flex;align-items:flex-start;gap:16px;transition:var(--tr);}
+    .project-item:hover{border-color:var(--border2);}
+    .project-item-left{flex:1;}
+    .project-num{font-family:'Share Tech Mono',monospace;font-size:0.65rem;color:var(--muted);letter-spacing:0.1em;margin-bottom:4px;}
+    .project-name{font-family:'Orbitron',sans-serif;font-size:0.85rem;font-weight:700;color:var(--white);letter-spacing:0.05em;margin-bottom:5px;}
+    .project-desc{font-size:0.88rem;color:var(--text);line-height:1.5;}
+    .project-tags{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;}
+    .tag{padding:2px 8px;border-radius:4px;font-size:0.65rem;font-family:'Orbitron',sans-serif;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;}
+    .tag-live{background:rgba(0,255,136,0.12);color:var(--green);border:1px solid rgba(0,255,136,0.25);}
+    .tag-unreleased{background:rgba(245,158,11,0.12);color:var(--gold);border:1px solid rgba(245,158,11,0.25);}
+    .tag-wip{background:rgba(0,212,255,0.12);color:var(--neon);border:1px solid rgba(0,212,255,0.25);}
+    .project-actions{display:flex;gap:8px;flex-shrink:0;align-items:flex-start;margin-top:4px;}
 
-    .lock-error {
-      margin-top: 20px;
-      font-family: 'Share Tech Mono', monospace;
-      font-size: 0.75rem;
-      color: var(--red);
-      letter-spacing: 0.08em;
-      opacity: 0;
-      transition: opacity 0.3s;
-    }
-    .lock-error.show { opacity: 1; }
+    /* ── GALLERY ── */
+    .gallery-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+    .gallery-item{position:relative;border-radius:8px;overflow:hidden;border:1px solid var(--border);aspect-ratio:16/10;background:var(--bg3);cursor:pointer;transition:var(--tr);}
+    .gallery-item:hover{border-color:var(--neon);box-shadow:0 0 20px rgba(0,212,255,0.2);transform:scale(1.02);}
+    .gallery-item img{width:100%;height:100%;object-fit:cover;display:block;}
+    .gallery-item-overlay{position:absolute;inset:0;background:rgba(8,11,18,0.7);display:flex;align-items:center;justify-content:center;gap:8px;opacity:0;transition:var(--tr);}
+    .gallery-item:hover .gallery-item-overlay{opacity:1;}
+    .gallery-num{position:absolute;top:6px;left:8px;font-family:'Share Tech Mono',monospace;font-size:0.65rem;color:var(--neon);background:rgba(0,212,255,0.1);padding:2px 6px;border-radius:4px;}
+    .upload-zone{border:2px dashed var(--border);border-radius:var(--radius);padding:48px 24px;text-align:center;transition:var(--tr);cursor:pointer;background:rgba(0,212,255,0.01);}
+    .upload-zone:hover,.upload-zone.dragover{border-color:var(--neon);background:rgba(0,212,255,0.04);box-shadow:0 0 30px rgba(0,212,255,0.06);}
+    .upload-icon{font-size:2.5rem;margin-bottom:12px;}
+    .upload-text{font-size:1rem;color:var(--text);margin-bottom:4px;}
+    .upload-sub{font-size:0.8rem;color:var(--muted);}
+    #fileInput{display:none;}
 
-    /* ========== MAIN APP ========== */
-    #app {
-      display: none;
-      min-height: 100vh;
-      position: relative; z-index: 1;
-    }
-    #app.visible { display: flex; }
+    /* ── SKILLS ── */
+    .skill-chip{display:inline-flex;align-items:center;gap:8px;background:var(--bg3);border:1px solid var(--border);border-radius:20px;padding:6px 14px;margin:4px;font-size:0.85rem;font-weight:600;color:var(--text);transition:var(--tr);}
+    .skill-chip:hover{border-color:var(--neon);color:var(--neon);}
+    .skill-chip-del{background:none;border:none;color:var(--muted);cursor:pointer;font-size:0.9rem;line-height:1;padding:0;transition:var(--tr);}
+    .skill-chip-del:hover{color:var(--red);}
 
-    /* ========== SIDEBAR ========== */
-    .sidebar {
-      width: 220px;
-      min-height: 100vh;
-      background: rgba(13,18,32,0.95);
-      border-right: 1px solid var(--border);
-      display: flex; flex-direction: column;
-      padding: 0;
-      position: sticky; top: 0;
-      height: 100vh;
-      overflow-y: auto;
-      flex-shrink: 0;
-    }
+    /* ── LOG ── */
+    .log-item{display:flex;gap:14px;align-items:flex-start;padding:10px 0;border-bottom:1px solid rgba(30,45,71,0.5);}
+    .log-item:last-child{border-bottom:none;}
+    .log-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:6px;}
+    .log-dot.add{background:var(--green);box-shadow:0 0 8px var(--green);}
+    .log-dot.edit{background:var(--neon);box-shadow:0 0 8px var(--neon);}
+    .log-dot.del{background:var(--red);box-shadow:0 0 8px var(--red);}
+    .log-dot.upload{background:var(--gold);box-shadow:0 0 8px var(--gold);}
+    .log-dot.deploy{background:var(--green);box-shadow:0 0 8px var(--green);}
+    .log-text{font-size:0.88rem;flex:1;}
+    .log-time{font-family:'Share Tech Mono',monospace;font-size:0.7rem;color:var(--muted);flex-shrink:0;}
 
-    .sidebar-logo {
-      padding: 24px 20px 20px;
-      border-bottom: 1px solid var(--border);
-    }
-    .sidebar-logo .logo-name {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 1rem;
-      font-weight: 900;
-      background: linear-gradient(135deg, var(--neon), var(--neon3));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      letter-spacing: 0.06em;
-    }
-    .sidebar-logo .logo-sub {
-      font-size: 0.7rem;
-      color: var(--muted);
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      margin-top: 2px;
-    }
+    /* ── SETTINGS ── */
+    .setting-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid rgba(30,45,71,0.5);}
+    .setting-row:last-child{border-bottom:none;}
+    .setting-info .setting-name{font-weight:600;color:var(--white);font-size:0.95rem;}
+    .setting-info .setting-desc{font-size:0.8rem;color:var(--muted);margin-top:2px;}
+    .toggle{position:relative;width:42px;height:24px;background:var(--border);border-radius:12px;cursor:pointer;transition:var(--tr);flex-shrink:0;border:none;}
+    .toggle::after{content:'';position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:var(--muted);transition:var(--tr);}
+    .toggle.on{background:rgba(0,212,255,0.2);border:1px solid var(--neon);}
+    .toggle.on::after{transform:translateX(18px);background:var(--neon);box-shadow:0 0 8px var(--neon);}
 
-    .sidebar-section {
-      padding: 16px 12px 4px;
-    }
-    .sidebar-section-label {
-      font-size: 0.62rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--muted);
-      padding: 0 8px;
-      margin-bottom: 6px;
-    }
+    /* ── EXPORT ── */
+    .export-box{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:20px;font-family:'Share Tech Mono',monospace;font-size:0.78rem;color:var(--text);line-height:1.8;max-height:280px;overflow-y:auto;white-space:pre-wrap;}
 
-    .nav-btn {
-      width: 100%;
-      display: flex; align-items: center; gap: 10px;
-      padding: 9px 12px;
-      border-radius: 8px;
-      border: none;
-      background: transparent;
-      color: var(--text);
-      font-family: 'Rajdhani', sans-serif;
-      font-size: 0.9rem;
-      font-weight: 600;
-      letter-spacing: 0.04em;
-      cursor: pointer;
-      transition: var(--tr);
-      text-align: left;
-      margin-bottom: 2px;
-    }
-    .nav-btn .nav-icon { font-size: 1rem; width: 20px; text-align: center; }
-    .nav-btn:hover { background: var(--surface); color: var(--white); }
-    .nav-btn.active { background: rgba(0,212,255,0.1); color: var(--neon); border: 1px solid rgba(0,212,255,0.15); }
-    .nav-btn.active .nav-icon { filter: drop-shadow(0 0 6px rgba(0,212,255,0.5)); }
+    /* ── TOAST ── */
+    #toastContainer{position:fixed;bottom:24px;right:24px;z-index:9998;display:flex;flex-direction:column;gap:10px;}
+    .toast{display:flex;align-items:center;gap:10px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px 18px;font-size:0.88rem;font-weight:600;color:var(--white);box-shadow:0 8px 32px rgba(0,0,0,0.4);animation:toastIn 0.3s ease;min-width:240px;}
+    .toast.success{border-color:rgba(0,255,136,0.3);}
+    .toast.success .toast-icon{color:var(--green);}
+    .toast.error{border-color:rgba(239,68,68,0.3);}
+    .toast.error .toast-icon{color:var(--red);}
+    .toast.info{border-color:rgba(0,212,255,0.3);}
+    .toast.info .toast-icon{color:var(--neon);}
+    @keyframes toastIn{from{transform:translateX(20px);opacity:0;}to{transform:none;opacity:1;}}
 
-    .sidebar-bottom {
-      margin-top: auto;
-      padding: 16px 12px;
-      border-top: 1px solid var(--border);
-    }
-    .logout-btn {
-      width: 100%;
-      padding: 9px 12px;
-      border-radius: 8px;
-      border: 1px solid var(--border);
-      background: transparent;
-      color: var(--muted);
-      font-family: 'Rajdhani', sans-serif;
-      font-size: 0.85rem;
-      font-weight: 600;
-      letter-spacing: 0.06em;
-      cursor: pointer;
-      transition: var(--tr);
-      display: flex; align-items: center; gap: 8px;
-      text-transform: uppercase;
-    }
-    .logout-btn:hover { background: rgba(239,68,68,0.1); border-color: var(--red); color: var(--red); }
+    /* ── MODAL ── */
+    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.8);backdrop-filter:blur(8px);z-index:1000;display:none;align-items:center;justify-content:center;}
+    .modal-overlay.open{display:flex;}
+    .modal{background:var(--surface);border:1px solid var(--border);border-radius:14px;width:100%;max-width:540px;padding:28px 32px;animation:modalIn 0.25s ease;max-height:90vh;overflow-y:auto;}
+    @keyframes modalIn{from{transform:scale(0.94) translateY(10px);opacity:0;}to{transform:none;opacity:1;}}
+    .modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;}
+    .modal-title{font-family:'Orbitron',sans-serif;font-size:0.85rem;font-weight:700;color:var(--white);letter-spacing:0.08em;text-transform:uppercase;}
+    .modal-close{background:none;border:none;color:var(--muted);font-size:1.2rem;cursor:pointer;transition:var(--tr);}
+    .modal-close:hover{color:var(--red);}
+    .modal-footer{display:flex;gap:10px;justify-content:flex-end;margin-top:24px;}
 
-    /* ========== MAIN CONTENT ========== */
-    .main-content {
-      flex: 1;
-      min-height: 100vh;
-      overflow-y: auto;
-    }
+    /* ── CONFIRM ── */
+    .confirm-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:2000;display:none;align-items:center;justify-content:center;backdrop-filter:blur(6px);}
+    .confirm-overlay.open{display:flex;}
+    .confirm-box{background:var(--surface);border:1px solid rgba(239,68,68,0.3);border-radius:14px;padding:28px 32px;max-width:380px;text-align:center;animation:modalIn 0.2s ease;}
+    .confirm-icon{font-size:2rem;margin-bottom:12px;}
+    .confirm-title{font-family:'Orbitron',sans-serif;font-size:0.9rem;font-weight:700;color:var(--white);margin-bottom:8px;letter-spacing:0.06em;}
+    .confirm-text{font-size:0.88rem;color:var(--muted);margin-bottom:24px;}
+    .confirm-actions{display:flex;gap:10px;justify-content:center;}
 
-    .topbar {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 18px 32px;
-      border-bottom: 1px solid var(--border);
-      background: rgba(8,11,18,0.7);
-      backdrop-filter: blur(10px);
-      position: sticky; top: 0; z-index: 50;
-    }
-    .topbar-title {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 0.85rem;
-      font-weight: 700;
-      color: var(--white);
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-    }
-    .topbar-status {
-      display: flex; align-items: center; gap: 8px;
-      font-size: 0.75rem; color: var(--green);
-      font-family: 'Share Tech Mono', monospace;
-    }
-    .status-dot {
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      background: var(--green);
-      box-shadow: 0 0 8px var(--green);
-      animation: blink 2s ease-in-out infinite;
-    }
-    @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
-
-    .page { display: none; padding: 32px; }
-    .page.active { display: block; }
-
-    /* ========== CARDS / PANELS ========== */
-    .card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 24px 28px;
-      margin-bottom: 20px;
-      transition: var(--tr);
-    }
-    .card:hover { border-color: var(--border2); }
-
-    .card-header {
-      display: flex; align-items: center; justify-content: space-between;
-      margin-bottom: 20px;
-    }
-    .card-title {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 0.78rem;
-      font-weight: 700;
-      color: var(--white);
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      display: flex; align-items: center; gap: 8px;
-    }
-    .card-title::before {
-      content: '';
-      display: inline-block;
-      width: 3px; height: 14px;
-      background: linear-gradient(var(--neon2), var(--neon));
-      border-radius: 2px;
-    }
-
-    /* ========== STAT BOXES ========== */
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 16px;
-      margin-bottom: 28px;
-    }
-    .stat-box {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 20px;
-      position: relative;
-      overflow: hidden;
-      transition: var(--tr);
-    }
-    .stat-box::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 2px;
-      background: linear-gradient(90deg, var(--neon), var(--neon3));
-    }
-    .stat-box:hover { border-color: var(--border2); transform: translateY(-2px); }
-    .stat-num {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 1.8rem;
-      font-weight: 900;
-      color: var(--neon);
-      line-height: 1;
-      margin-bottom: 6px;
-    }
-    .stat-label { font-size: 0.78rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; }
-
-    /* ========== FORM ELEMENTS ========== */
-    .form-group { margin-bottom: 16px; }
-    .form-label {
-      display: block;
-      font-size: 0.75rem;
-      font-weight: 600;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 6px;
-    }
-    .form-input, .form-select, .form-textarea {
-      width: 100%;
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      color: var(--white);
-      font-family: 'Rajdhani', sans-serif;
-      font-size: 0.95rem;
-      padding: 10px 14px;
-      outline: none;
-      transition: var(--tr);
-    }
-    .form-input:focus, .form-select:focus, .form-textarea:focus {
-      border-color: var(--neon);
-      box-shadow: 0 0 0 3px rgba(0,212,255,0.08);
-    }
-    .form-textarea { resize: vertical; min-height: 80px; }
-    .form-select option { background: var(--bg2); }
-    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-
-    /* ========== BUTTONS ========== */
-    .btn {
-      display: inline-flex; align-items: center; gap: 7px;
-      padding: 9px 20px;
-      border-radius: 8px;
-      border: none;
-      font-family: 'Orbitron', sans-serif;
-      font-size: 0.68rem;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      cursor: pointer;
-      transition: var(--tr);
-    }
-    .btn-primary {
-      background: linear-gradient(135deg, var(--neon), var(--neon3));
-      color: #fff;
-      box-shadow: 0 0 20px rgba(0,212,255,0.25);
-    }
-    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 0 30px rgba(0,212,255,0.4); filter: brightness(1.1); }
-    .btn-danger { background: rgba(239,68,68,0.15); border: 1px solid rgba(239,68,68,0.4); color: var(--red); }
-    .btn-danger:hover { background: rgba(239,68,68,0.25); box-shadow: 0 0 15px rgba(239,68,68,0.2); }
-    .btn-ghost { background: transparent; border: 1px solid var(--border); color: var(--text); }
-    .btn-ghost:hover { border-color: var(--neon); color: var(--neon); }
-    .btn-success { background: rgba(0,255,136,0.15); border: 1px solid rgba(0,255,136,0.3); color: var(--green); }
-    .btn-success:hover { background: rgba(0,255,136,0.25); }
-    .btn-sm { padding: 6px 12px; font-size: 0.6rem; }
-    .btn:active { transform: scale(0.96); }
-
-    /* ========== PROJECT LIST ========== */
-    .project-item {
-      background: var(--bg3);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 18px 22px;
-      margin-bottom: 12px;
-      display: flex; align-items: flex-start; gap: 16px;
-      transition: var(--tr);
-    }
-    .project-item:hover { border-color: var(--border2); }
-    .project-item-left { flex: 1; }
-    .project-num {
-      font-family: 'Share Tech Mono', monospace;
-      font-size: 0.65rem;
-      color: var(--muted);
-      letter-spacing: 0.1em;
-      margin-bottom: 4px;
-    }
-    .project-name {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 0.85rem;
-      font-weight: 700;
-      color: var(--white);
-      letter-spacing: 0.05em;
-      margin-bottom: 5px;
-    }
-    .project-desc { font-size: 0.88rem; color: var(--text); line-height: 1.5; }
-    .project-tags { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
-    .tag {
-      padding: 2px 8px;
-      border-radius: 4px;
-      font-size: 0.65rem;
-      font-family: 'Orbitron', sans-serif;
-      font-weight: 600;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-    }
-    .tag-live { background: rgba(0,255,136,0.12); color: var(--green); border: 1px solid rgba(0,255,136,0.25); }
-    .tag-unreleased { background: rgba(245,158,11,0.12); color: var(--gold); border: 1px solid rgba(245,158,11,0.25); }
-    .tag-wip { background: rgba(0,212,255,0.12); color: var(--neon); border: 1px solid rgba(0,212,255,0.25); }
-    .project-actions { display: flex; gap: 8px; flex-shrink: 0; align-items: flex-start; margin-top: 4px; }
-
-    /* ========== GALLERY GRID ========== */
-    .gallery-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 12px;
-    }
-    .gallery-item {
-      position: relative;
-      border-radius: 8px;
-      overflow: hidden;
-      border: 1px solid var(--border);
-      aspect-ratio: 16/10;
-      background: var(--bg3);
-      cursor: pointer;
-      transition: var(--tr);
-    }
-    .gallery-item:hover { border-color: var(--neon); box-shadow: 0 0 20px rgba(0,212,255,0.2); transform: scale(1.02); }
-    .gallery-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
-    .gallery-item-overlay {
-      position: absolute; inset: 0;
-      background: rgba(8,11,18,0.7);
-      display: flex; align-items: center; justify-content: center;
-      gap: 8px;
-      opacity: 0; transition: var(--tr);
-    }
-    .gallery-item:hover .gallery-item-overlay { opacity: 1; }
-    .gallery-num {
-      position: absolute; top: 6px; left: 8px;
-      font-family: 'Share Tech Mono', monospace;
-      font-size: 0.65rem;
-      color: var(--neon);
-      background: rgba(0,212,255,0.1);
-      padding: 2px 6px;
-      border-radius: 4px;
-    }
-
-    /* ========== UPLOAD ZONE ========== */
-    .upload-zone {
-      border: 2px dashed var(--border);
-      border-radius: var(--radius);
-      padding: 48px 24px;
-      text-align: center;
-      transition: var(--tr);
-      cursor: pointer;
-      background: rgba(0,212,255,0.01);
-    }
-    .upload-zone:hover, .upload-zone.dragover {
-      border-color: var(--neon);
-      background: rgba(0,212,255,0.04);
-      box-shadow: 0 0 30px rgba(0,212,255,0.06);
-    }
-    .upload-icon { font-size: 2.5rem; margin-bottom: 12px; filter: drop-shadow(0 0 10px rgba(0,212,255,0.3)); }
-    .upload-text { font-size: 1rem; color: var(--text); margin-bottom: 4px; }
-    .upload-sub { font-size: 0.8rem; color: var(--muted); }
-    #fileInput { display: none; }
-
-    /* ========== SKILL / ABOUT EDITOR ========== */
-    .skill-chip {
-      display: inline-flex; align-items: center; gap: 8px;
-      background: var(--bg3);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 6px 14px;
-      margin: 4px;
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: var(--text);
-      transition: var(--tr);
-    }
-    .skill-chip:hover { border-color: var(--neon); color: var(--neon); }
-    .skill-chip-del {
-      background: none; border: none;
-      color: var(--muted); cursor: pointer;
-      font-size: 0.9rem; line-height: 1;
-      padding: 0; transition: var(--tr);
-    }
-    .skill-chip-del:hover { color: var(--red); }
-
-    /* ========== TOAST NOTIFICATIONS ========== */
-    #toastContainer {
-      position: fixed; bottom: 24px; right: 24px;
-      z-index: 9998; display: flex; flex-direction: column; gap: 10px;
-    }
-    .toast {
-      display: flex; align-items: center; gap: 10px;
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 12px 18px;
-      font-size: 0.88rem;
-      font-weight: 600;
-      color: var(--white);
-      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
-      animation: toastIn 0.3s ease;
-      min-width: 240px;
-    }
-    .toast.success { border-color: rgba(0,255,136,0.3); }
-    .toast.success .toast-icon { color: var(--green); }
-    .toast.error { border-color: rgba(239,68,68,0.3); }
-    .toast.error .toast-icon { color: var(--red); }
-    .toast.info { border-color: rgba(0,212,255,0.3); }
-    .toast.info .toast-icon { color: var(--neon); }
-    @keyframes toastIn { from { transform: translateX(20px); opacity: 0; } to { transform: none; opacity: 1; } }
-
-    /* ========== MODAL ========== */
-    .modal-overlay {
-      position: fixed; inset: 0;
-      background: rgba(0,0,0,0.8);
-      backdrop-filter: blur(8px);
-      z-index: 1000;
-      display: none; align-items: center; justify-content: center;
-    }
-    .modal-overlay.open { display: flex; }
-    .modal {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      width: 100%; max-width: 540px;
-      padding: 28px 32px;
-      animation: modalIn 0.25s ease;
-      max-height: 90vh; overflow-y: auto;
-    }
-    @keyframes modalIn { from { transform: scale(0.94) translateY(10px); opacity: 0; } to { transform: none; opacity: 1; } }
-    .modal-header {
-      display: flex; align-items: center; justify-content: space-between;
-      margin-bottom: 24px;
-    }
-    .modal-title {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 0.85rem; font-weight: 700;
-      color: var(--white); letter-spacing: 0.08em; text-transform: uppercase;
-    }
-    .modal-close {
-      background: none; border: none;
-      color: var(--muted); font-size: 1.2rem;
-      cursor: pointer; transition: var(--tr);
-    }
-    .modal-close:hover { color: var(--red); }
-    .modal-footer {
-      display: flex; gap: 10px; justify-content: flex-end;
-      margin-top: 24px;
-    }
-
-    /* ========== CHANGELOG / ACTIVITY LOG ========== */
-    .log-item {
-      display: flex; gap: 14px; align-items: flex-start;
-      padding: 10px 0;
-      border-bottom: 1px solid rgba(30,45,71,0.5);
-    }
-    .log-item:last-child { border-bottom: none; }
-    .log-dot {
-      width: 8px; height: 8px; border-radius: 50%;
-      flex-shrink: 0; margin-top: 6px;
-    }
-    .log-dot.add { background: var(--green); box-shadow: 0 0 8px var(--green); }
-    .log-dot.edit { background: var(--neon); box-shadow: 0 0 8px var(--neon); }
-    .log-dot.del { background: var(--red); box-shadow: 0 0 8px var(--red); }
-    .log-dot.upload { background: var(--gold); box-shadow: 0 0 8px var(--gold); }
-    .log-text { font-size: 0.88rem; flex: 1; }
-    .log-time { font-family: 'Share Tech Mono', monospace; font-size: 0.7rem; color: var(--muted); flex-shrink: 0; }
-
-    /* ========== SETTINGS TOGGLES ========== */
-    .setting-row {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 14px 0;
-      border-bottom: 1px solid rgba(30,45,71,0.5);
-    }
-    .setting-row:last-child { border-bottom: none; }
-    .setting-info .setting-name { font-weight: 600; color: var(--white); font-size: 0.95rem; }
-    .setting-info .setting-desc { font-size: 0.8rem; color: var(--muted); margin-top: 2px; }
-    .toggle {
-      position: relative; width: 42px; height: 24px;
-      background: var(--border); border-radius: 12px;
-      cursor: pointer; transition: var(--tr); flex-shrink: 0;
-      border: none;
-    }
-    .toggle::after {
-      content: '';
-      position: absolute; top: 3px; left: 3px;
-      width: 18px; height: 18px;
-      border-radius: 50%; background: var(--muted);
-      transition: var(--tr);
-    }
-    .toggle.on { background: rgba(0,212,255,0.2); border: 1px solid var(--neon); }
-    .toggle.on::after { transform: translateX(18px); background: var(--neon); box-shadow: 0 0 8px var(--neon); }
-
-    /* ========== EXPORT PREVIEW ========== */
-    .export-box {
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 20px;
-      font-family: 'Share Tech Mono', monospace;
-      font-size: 0.78rem;
-      color: var(--text);
-      line-height: 1.8;
-      max-height: 280px;
-      overflow-y: auto;
-      white-space: pre-wrap;
-    }
-
-    /* ========== CONFIRM DIALOG ========== */
-    .confirm-overlay {
-      position: fixed; inset: 0;
-      background: rgba(0,0,0,0.85);
-      z-index: 2000;
-      display: none; align-items: center; justify-content: center;
-      backdrop-filter: blur(6px);
-    }
-    .confirm-overlay.open { display: flex; }
-    .confirm-box {
-      background: var(--surface);
-      border: 1px solid rgba(239,68,68,0.3);
-      border-radius: 14px;
-      padding: 28px 32px;
-      max-width: 380px;
-      text-align: center;
-      animation: modalIn 0.2s ease;
-    }
-    .confirm-icon { font-size: 2rem; margin-bottom: 12px; }
-    .confirm-title { font-family: 'Orbitron', sans-serif; font-size: 0.9rem; font-weight: 700; color: var(--white); margin-bottom: 8px; letter-spacing: 0.06em; }
-    .confirm-text { font-size: 0.88rem; color: var(--muted); margin-bottom: 24px; }
-    .confirm-actions { display: flex; gap: 10px; justify-content: center; }
-
-    @media (max-width: 900px) {
-      .stats-grid { grid-template-columns: repeat(2,1fr); }
-      .gallery-grid { grid-template-columns: repeat(2,1fr); }
-      .sidebar { width: 60px; }
-      .sidebar .logo-name, .sidebar .logo-sub, .nav-btn span, .sidebar-section-label { display: none; }
-      .nav-btn { justify-content: center; padding: 10px; }
-      .nav-btn .nav-icon { width: auto; }
-      .sidebar-bottom .logout-btn span { display: none; }
+    @media(max-width:900px){
+      .stats-grid{grid-template-columns:repeat(2,1fr);}
+      .gallery-grid{grid-template-columns:repeat(2,1fr);}
+      .sidebar{width:60px;}
+      .sidebar .logo-name,.sidebar .logo-sub,.nav-btn span,.sidebar-section-label{display:none;}
+      .nav-btn{justify-content:center;padding:10px;}
+      .sidebar-bottom .logout-btn span{display:none;}
     }
   </style>
 </head>
 <body>
 
-<!-- ========== LOCK SCREEN ========== -->
-<div id="lockScreen">
-  <div class="lock-visual">
-    <div class="lock-ring">
-      <div class="lock-icon">🔒</div>
-    </div>
-  </div>
+<!-- ══════════════════════════════════════════
+     LOCK SCREEN
+══════════════════════════════════════════ -->
+<div class="overlay" id="lockScreen">
+  <div class="lock-ring"><div class="lock-icon">🔒</div></div>
   <div class="lock-label">LUK.DEVX SYSTEM</div>
   <div class="lock-title">Admin Access</div>
   <div class="lock-sub">Enter your PIN to continue</div>
-
   <div class="pin-dots" id="pinDots">
-    <div class="pin-dot" id="d0"></div>
-    <div class="pin-dot" id="d1"></div>
-    <div class="pin-dot" id="d2"></div>
-    <div class="pin-dot" id="d3"></div>
+    <div class="pin-dot" id="d0"></div><div class="pin-dot" id="d1"></div>
+    <div class="pin-dot" id="d2"></div><div class="pin-dot" id="d3"></div>
   </div>
-
   <div class="numpad">
     <button class="num-btn" onclick="numPress('1')">1</button>
     <button class="num-btn" onclick="numPress('2')">2</button>
@@ -779,124 +264,116 @@
   <div class="lock-error" id="lockError">⚠ WRONG PIN — ACCESS DENIED</div>
 </div>
 
-<!-- ========== MAIN APP ========== -->
-<div id="app">
+<!-- ══════════════════════════════════════════
+     GITHUB SETUP SCREEN
+══════════════════════════════════════════ -->
+<div class="overlay hidden" id="setupScreen">
+  <div class="setup-box">
+    <div class="setup-logo">LUK.DEVX</div>
+    <div class="setup-sub">Admin Panel — First Time Setup</div>
+    <div class="setup-step">Step 1 of 1 — Connect GitHub</div>
 
-  <!-- SIDEBAR -->
+    <div class="form-group">
+      <label class="form-label">GitHub Personal Access Token</label>
+      <div class="token-input-wrap">
+        <input class="form-input" id="setupToken" type="password" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" autocomplete="off" />
+        <button class="token-eye" onclick="toggleTokenVis('setupToken',this)">👁</button>
+      </div>
+      <div class="setup-hint">
+        Go to <a href="https://github.com/settings/tokens" target="_blank">github.com/settings/tokens</a>
+        → Generate new token (classic) → check <strong>repo</strong> → copy &amp; paste here.<br/>
+        Your token is stored <strong>only in your browser</strong> — never sent anywhere except GitHub.
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">GitHub Username</label>
+      <input class="form-input" id="setupUser" value="lukas-56376" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">Repository Name</label>
+      <input class="form-input" id="setupRepo" value="Roblox_Studio_Portfolio" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">Branch</label>
+      <input class="form-input" id="setupBranch" value="main" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">index.html filename</label>
+      <input class="form-input" id="setupFile" value="index.html" />
+    </div>
+
+    <button class="btn btn-primary" style="width:100%;justify-content:center;" onclick="saveSetup()">
+      🔗 Connect &amp; Continue
+    </button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     MAIN APP
+══════════════════════════════════════════ -->
+<div id="app">
   <aside class="sidebar">
     <div class="sidebar-logo">
       <div class="logo-name">LUK.DEVX</div>
       <div class="logo-sub">Admin Panel</div>
     </div>
-
     <div class="sidebar-section">
       <div class="sidebar-section-label">Main</div>
-      <button class="nav-btn active" onclick="navigate('dashboard', this)">
-        <span class="nav-icon">⚡</span><span>Dashboard</span>
-      </button>
-      <button class="nav-btn" onclick="navigate('projects', this)">
-        <span class="nav-icon">📁</span><span>Projects</span>
-      </button>
-      <button class="nav-btn" onclick="navigate('gallery', this)">
-        <span class="nav-icon">🖼️</span><span>Gallery</span>
-      </button>
+      <button class="nav-btn active" onclick="navigate('dashboard',this)"><span class="nav-icon">⚡</span><span>Dashboard</span></button>
+      <button class="nav-btn" onclick="navigate('projects',this)"><span class="nav-icon">📁</span><span>Projects</span></button>
+      <button class="nav-btn" onclick="navigate('gallery',this)"><span class="nav-icon">🖼️</span><span>Gallery</span></button>
     </div>
-
     <div class="sidebar-section">
       <div class="sidebar-section-label">Content</div>
-      <button class="nav-btn" onclick="navigate('about', this)">
-        <span class="nav-icon">👤</span><span>About & Bio</span>
-      </button>
-      <button class="nav-btn" onclick="navigate('skills', this)">
-        <span class="nav-icon">🛠️</span><span>Skills</span>
-      </button>
-      <button class="nav-btn" onclick="navigate('goals', this)">
-        <span class="nav-icon">🎯</span><span>Goals</span>
-      </button>
+      <button class="nav-btn" onclick="navigate('about',this)"><span class="nav-icon">👤</span><span>About &amp; Bio</span></button>
+      <button class="nav-btn" onclick="navigate('skills',this)"><span class="nav-icon">🛠️</span><span>Skills</span></button>
+      <button class="nav-btn" onclick="navigate('goals',this)"><span class="nav-icon">🎯</span><span>Goals</span></button>
     </div>
-
     <div class="sidebar-section">
-      <div class="sidebar-section-label">System</div>
-      <button class="nav-btn" onclick="navigate('export', this)">
-        <span class="nav-icon">📤</span><span>Export Code</span>
-      </button>
-      <button class="nav-btn" onclick="navigate('settings', this)">
-        <span class="nav-icon">⚙️</span><span>Settings</span>
-      </button>
-      <button class="nav-btn" onclick="navigate('log', this)">
-        <span class="nav-icon">📋</span><span>Activity Log</span>
-      </button>
+      <div class="sidebar-section-label">Deploy</div>
+      <button class="nav-btn" onclick="navigate('deploy',this)"><span class="nav-icon">🚀</span><span>Deploy to GitHub</span></button>
+      <button class="nav-btn" onclick="navigate('settings',this)"><span class="nav-icon">⚙️</span><span>Settings</span></button>
+      <button class="nav-btn" onclick="navigate('log',this)"><span class="nav-icon">📋</span><span>Activity Log</span></button>
     </div>
-
     <div class="sidebar-bottom">
-      <button class="logout-btn" onclick="logout()">
-        <span>⏻</span><span>Logout</span>
-      </button>
+      <button class="logout-btn" onclick="logout()"><span>⏻</span><span>Logout</span></button>
     </div>
   </aside>
 
-  <!-- MAIN -->
   <div class="main-content">
-
     <div class="topbar">
       <div class="topbar-title" id="topbarTitle">Dashboard</div>
-      <div class="topbar-status">
-        <div class="status-dot"></div>
-        <span id="sessionTime">Session active</span>
+      <div class="topbar-right">
+        <div class="gh-badge" id="ghBadge">⚪ Not connected</div>
+        <div class="topbar-status"><div class="status-dot"></div><span id="sessionTime">00:00</span></div>
       </div>
     </div>
 
-    <!-- ===== DASHBOARD ===== -->
+    <!-- DASHBOARD -->
     <div class="page active" id="page-dashboard">
-
       <div class="stats-grid">
-        <div class="stat-box">
-          <div class="stat-num" id="stat-projects">2</div>
-          <div class="stat-label">Projects</div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-num" id="stat-gallery">12</div>
-          <div class="stat-label">Gallery Images</div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-num" id="stat-skills">4</div>
-          <div class="stat-label">Core Skills</div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-num" id="stat-goals">3</div>
-          <div class="stat-label">Goals Listed</div>
-        </div>
+        <div class="stat-box"><div class="stat-num" id="stat-projects">0</div><div class="stat-label">Projects</div></div>
+        <div class="stat-box"><div class="stat-num" id="stat-gallery">0</div><div class="stat-label">Gallery Images</div></div>
+        <div class="stat-box"><div class="stat-num" id="stat-skills">0</div><div class="stat-label">Core Skills</div></div>
+        <div class="stat-box"><div class="stat-num" id="stat-goals">0</div><div class="stat-label">Goals Listed</div></div>
       </div>
-
       <div class="card">
-        <div class="card-header">
-          <div class="card-title">Quick Actions</div>
-        </div>
+        <div class="card-header"><div class="card-title">Quick Actions</div></div>
         <div style="display:flex;gap:10px;flex-wrap:wrap;">
-          <button class="btn btn-primary" onclick="navigate('projects', document.querySelector('[onclick*=projects]'))">
-            ＋ Add Project
-          </button>
-          <button class="btn btn-ghost" onclick="navigate('gallery', document.querySelector('[onclick*=gallery]'))">
-            🖼️ Upload Image
-          </button>
-          <button class="btn btn-ghost" onclick="navigate('about', document.querySelector('[onclick*=about]'))">
-            ✏️ Edit Bio
-          </button>
-          <button class="btn btn-success" onclick="navigate('export', document.querySelector('[onclick*=export]'))">
-            📤 Export & Deploy
-          </button>
+          <button class="btn btn-primary" onclick="navigate('projects',document.querySelector('[onclick*=projects]'));openProjectModal()">＋ Add Project</button>
+          <button class="btn btn-ghost" onclick="navigate('gallery',document.querySelector('[onclick*=gallery]'))">🖼️ Upload Image</button>
+          <button class="btn btn-ghost" onclick="navigate('about',document.querySelector('[onclick*=about]'))">✏️ Edit Bio</button>
+          <button class="btn btn-success" onclick="navigate('deploy',document.querySelector('[onclick*=deploy]'))">🚀 Deploy Live</button>
         </div>
       </div>
-
       <div class="card">
-        <div class="card-header">
-          <div class="card-title">Recent Activity</div>
-        </div>
+        <div class="card-header"><div class="card-title">Recent Activity</div></div>
         <div id="dashLog"></div>
       </div>
     </div>
 
-    <!-- ===== PROJECTS ===== -->
+    <!-- PROJECTS -->
     <div class="page" id="page-projects">
       <div class="card">
         <div class="card-header">
@@ -907,75 +384,55 @@
       </div>
     </div>
 
-    <!-- ===== GALLERY ===== -->
+    <!-- GALLERY -->
     <div class="page" id="page-gallery">
       <div class="card">
-        <div class="card-header">
-          <div class="card-title">Upload Images</div>
-        </div>
-        <div class="upload-zone" id="uploadZone" onclick="document.getElementById('fileInput').click()"
-             ondragover="event.preventDefault();this.classList.add('dragover')"
-             ondragleave="this.classList.remove('dragover')"
-             ondrop="handleDrop(event)">
+        <div class="card-header"><div class="card-title">Upload Images</div></div>
+        <div class="upload-zone" id="uploadZone"
+          onclick="document.getElementById('fileInput').click()"
+          ondragover="event.preventDefault();this.classList.add('dragover')"
+          ondragleave="this.classList.remove('dragover')"
+          ondrop="handleDrop(event)">
           <div class="upload-icon">📤</div>
-          <div class="upload-text">Click or drag & drop images here</div>
-          <div class="upload-sub">PNG, JPG, WEBP supported • Multiple files allowed</div>
+          <div class="upload-text">Click or drag &amp; drop images here</div>
+          <div class="upload-sub">PNG, JPG, WEBP • Multiple files allowed</div>
         </div>
         <input type="file" id="fileInput" multiple accept="image/*" onchange="handleFileInput(event)" />
       </div>
-
       <div class="card">
         <div class="card-header">
           <div class="card-title">Gallery Images</div>
-          <span style="font-size:0.78rem;color:var(--muted);" id="galleryCount">12 images</span>
+          <span style="font-size:0.78rem;color:var(--muted);" id="galleryCount">0 images</span>
         </div>
         <div class="gallery-grid" id="galleryGrid"></div>
       </div>
     </div>
 
-    <!-- ===== ABOUT ===== -->
+    <!-- ABOUT -->
     <div class="page" id="page-about">
       <div class="card">
         <div class="card-header"><div class="card-title">Bio / About Me</div></div>
-        <div class="form-group">
-          <label class="form-label">Display Name</label>
-          <input class="form-input" id="bioName" value="Lukas" />
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Display Name</label><input class="form-input" id="bioName" value="Lukas" /></div>
+          <div class="form-group"><label class="form-label">Age</label><input class="form-input" id="bioAge" value="14" type="number" /></div>
         </div>
-        <div class="form-group">
-          <label class="form-label">Age</label>
-          <input class="form-input" id="bioAge" value="14" type="number" />
-        </div>
-        <div class="form-group">
-          <label class="form-label">Experience</label>
-          <input class="form-input" id="bioExp" value="6 months" />
-        </div>
-        <div class="form-group">
-          <label class="form-label">Full Bio Text</label>
-          <textarea class="form-textarea" id="bioText" rows="4">Hey, I am Lukas and I am 14 years old. I have been developing in Roblox Studio for around 6 months now. I am new to development, but I am always motivated and I want to learn. Every project is a step forward — and I'm committed to becoming a better developer with every build.</textarea>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Availability Status</label>
-          <select class="form-select" id="bioStatus">
-            <option value="available">Available for Projects</option>
-            <option value="busy">Currently Busy</option>
-            <option value="open">Open to Collabs</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Discord Contact URL</label>
-          <input class="form-input" id="bioDiscord" value="https://discord.com/users/1474121522376347861" />
+        <div class="form-group"><label class="form-label">Experience</label><input class="form-input" id="bioExp" value="6 months" /></div>
+        <div class="form-group"><label class="form-label">Full Bio Text</label><textarea class="form-textarea" id="bioText" rows="4">Hey, I am Lukas and I am 14 years old. I have been developing in Roblox Studio for around 6 months now. I am new to development, but I am always motivated and I want to learn. Every project is a step forward — and I'm committed to becoming a better developer with every build.</textarea></div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Availability Status</label><select class="form-select" id="bioStatus"><option value="available">Available for Projects</option><option value="busy">Currently Busy</option><option value="open">Open to Collabs</option></select></div>
+          <div class="form-group"><label class="form-label">Discord Contact URL</label><input class="form-input" id="bioDiscord" value="https://discord.com/users/1474121522376347861" /></div>
         </div>
         <button class="btn btn-primary" onclick="saveAbout()">💾 Save Changes</button>
       </div>
     </div>
 
-    <!-- ===== SKILLS ===== -->
+    <!-- SKILLS -->
     <div class="page" id="page-skills">
       <div class="card">
         <div class="card-header"><div class="card-title">Core Skills</div></div>
         <div id="skillChips" style="margin-bottom:16px;"></div>
         <div style="display:flex;gap:10px;">
-          <input class="form-input" id="newSkill" placeholder="Add new skill…" style="max-width:280px;" onkeydown="if(event.key==='Enter')addSkill()" />
+          <input class="form-input" id="newSkill" placeholder="Add skill…" style="max-width:280px;" onkeydown="if(event.key==='Enter')addSkill()" />
           <button class="btn btn-primary btn-sm" onclick="addSkill()">＋ Add</button>
         </div>
       </div>
@@ -983,13 +440,13 @@
         <div class="card-header"><div class="card-title">Systems / Tech Tags</div></div>
         <div id="systemChips" style="margin-bottom:16px;"></div>
         <div style="display:flex;gap:10px;">
-          <input class="form-input" id="newSystem" placeholder="Add system tag…" style="max-width:280px;" onkeydown="if(event.key==='Enter')addSystem()" />
+          <input class="form-input" id="newSystem" placeholder="Add system…" style="max-width:280px;" onkeydown="if(event.key==='Enter')addSystem()" />
           <button class="btn btn-primary btn-sm" onclick="addSystem()">＋ Add</button>
         </div>
       </div>
     </div>
 
-    <!-- ===== GOALS ===== -->
+    <!-- GOALS -->
     <div class="page" id="page-goals">
       <div class="card">
         <div class="card-header">
@@ -1000,93 +457,93 @@
       </div>
     </div>
 
-    <!-- ===== EXPORT ===== -->
-    <div class="page" id="page-export">
+    <!-- DEPLOY -->
+    <div class="page" id="page-deploy">
+      <div class="deploy-bar">
+        <div class="deploy-bar-text">
+          <strong>🚀 Deploy to GitHub Pages</strong><br/>
+          <span style="font-size:0.8rem;color:var(--muted);">This will update your live <code>index.html</code> on GitHub instantly.</span>
+        </div>
+        <button class="btn btn-success" id="deployBtn" onclick="deployToGitHub()">🚀 Deploy Now</button>
+      </div>
+      <div id="deployStatus" class="deploy-status"></div>
+
       <div class="card">
-        <div class="card-header"><div class="card-title">Export — Projects HTML</div></div>
-        <p style="font-size:0.88rem;color:var(--muted);margin-bottom:16px;">Copy this HTML and paste it into the Projects section of your <code>index.html</code></p>
-        <div class="export-box" id="exportProjects"></div>
-        <div style="margin-top:14px;display:flex;gap:10px;">
-          <button class="btn btn-primary btn-sm" onclick="copyExport('exportProjects')">📋 Copy HTML</button>
+        <div class="card-header"><div class="card-title">GitHub Connection</div></div>
+        <div class="form-group">
+          <label class="form-label">Personal Access Token</label>
+          <div class="token-input-wrap">
+            <input class="form-input" id="ghToken" type="password" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" autocomplete="off" />
+            <button class="token-eye" onclick="toggleTokenVis('ghToken',this)">👁</button>
+          </div>
+          <p style="font-size:0.78rem;color:var(--muted);margin-top:6px;">Stored only in your browser. Never shared.</p>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Username</label><input class="form-input" id="ghUser" /></div>
+          <div class="form-group"><label class="form-label">Repository</label><input class="form-input" id="ghRepo" /></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Branch</label><input class="form-input" id="ghBranch" /></div>
+          <div class="form-group"><label class="form-label">File (e.g. index.html)</label><input class="form-input" id="ghFile" /></div>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:4px;">
+          <button class="btn btn-primary btn-sm" onclick="saveGitHubConfig()">💾 Save Config</button>
+          <button class="btn btn-ghost btn-sm" onclick="testConnection()">🔌 Test Connection</button>
         </div>
       </div>
+
       <div class="card">
-        <div class="card-header"><div class="card-title">Export — Gallery HTML</div></div>
-        <p style="font-size:0.88rem;color:var(--muted);margin-bottom:16px;">Paste this inside the Gallery section of your <code>index.html</code></p>
-        <div class="export-box" id="exportGallery"></div>
-        <div style="margin-top:14px;display:flex;gap:10px;">
-          <button class="btn btn-primary btn-sm" onclick="copyExport('exportGallery')">📋 Copy HTML</button>
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-header"><div class="card-title">Export — About HTML</div></div>
-        <div class="export-box" id="exportAbout"></div>
-        <div style="margin-top:14px;">
-          <button class="btn btn-primary btn-sm" onclick="copyExport('exportAbout')">📋 Copy HTML</button>
+        <div class="card-header"><div class="card-title">Preview — What will be deployed</div></div>
+        <p style="font-size:0.82rem;color:var(--muted);margin-bottom:12px;">This is the full HTML that gets written to your index.html on GitHub.</p>
+        <div class="export-box" id="previewHTML" style="max-height:360px;"></div>
+        <div style="margin-top:12px;">
+          <button class="btn btn-ghost btn-sm" onclick="refreshPreview()">🔄 Refresh Preview</button>
+          <button class="btn btn-ghost btn-sm" onclick="copyPreview()">📋 Copy HTML</button>
         </div>
       </div>
     </div>
 
-    <!-- ===== SETTINGS ===== -->
+    <!-- SETTINGS -->
     <div class="page" id="page-settings">
       <div class="card">
         <div class="card-header"><div class="card-title">Site Settings</div></div>
         <div class="setting-row">
-          <div class="setting-info">
-            <div class="setting-name">Show Availability Badge</div>
-            <div class="setting-desc">Show "Available for Projects" banner on site</div>
-          </div>
+          <div class="setting-info"><div class="setting-name">Show Availability Badge</div><div class="setting-desc">Show "Available for Projects" on site</div></div>
           <button class="toggle on" id="toggleAvailability" onclick="toggleSetting(this)"></button>
         </div>
         <div class="setting-row">
-          <div class="setting-info">
-            <div class="setting-name">Show Project Numbers</div>
-            <div class="setting-desc">Show "Project 01", "Project 02" labels</div>
-          </div>
+          <div class="setting-info"><div class="setting-name">Show Project Numbers</div><div class="setting-desc">Show "Project 01", "Project 02" labels</div></div>
           <button class="toggle on" id="toggleProjNums" onclick="toggleSetting(this)"></button>
         </div>
         <div class="setting-row">
-          <div class="setting-info">
-            <div class="setting-name">Gallery Lightbox</div>
-            <div class="setting-desc">Open full-size image on gallery click</div>
-          </div>
+          <div class="setting-info"><div class="setting-name">Gallery Lightbox</div><div class="setting-desc">Open full-size image on gallery click</div></div>
           <button class="toggle on" id="toggleLightbox" onclick="toggleSetting(this)"></button>
         </div>
         <div class="setting-row">
-          <div class="setting-info">
-            <div class="setting-name">Scroll Animations</div>
-            <div class="setting-desc">Animate sections on scroll</div>
-          </div>
+          <div class="setting-info"><div class="setting-name">Scroll Animations</div><div class="setting-desc">Animate sections on scroll</div></div>
           <button class="toggle on" id="toggleAnimations" onclick="toggleSetting(this)"></button>
         </div>
       </div>
-
       <div class="card">
         <div class="card-header"><div class="card-title">Change Admin PIN</div></div>
         <div class="form-row">
-          <div class="form-group">
-            <label class="form-label">New PIN (4 digits)</label>
-            <input class="form-input" id="newPin" type="password" maxlength="4" placeholder="••••" />
-          </div>
-          <div class="form-group">
-            <label class="form-label">Confirm PIN</label>
-            <input class="form-input" id="confirmPin" type="password" maxlength="4" placeholder="••••" />
-          </div>
+          <div class="form-group"><label class="form-label">New PIN (4 digits)</label><input class="form-input" id="newPin" type="password" maxlength="4" placeholder="••••" /></div>
+          <div class="form-group"><label class="form-label">Confirm PIN</label><input class="form-input" id="confirmPin" type="password" maxlength="4" placeholder="••••" /></div>
         </div>
         <button class="btn btn-primary btn-sm" onclick="changePin()">🔑 Update PIN</button>
       </div>
-
       <div class="card">
         <div class="card-header"><div class="card-title">Danger Zone</div></div>
         <div style="display:flex;gap:10px;flex-wrap:wrap;">
-          <button class="btn btn-danger btn-sm" onclick="confirmAction('Reset all data to defaults?', resetAll)">🗑 Reset All Data</button>
-          <button class="btn btn-danger btn-sm" onclick="confirmAction('Clear all gallery images?', clearGallery)">🖼️ Clear Gallery</button>
-          <button class="btn btn-danger btn-sm" onclick="confirmAction('Clear all projects?', clearProjects)">📁 Clear Projects</button>
+          <button class="btn btn-danger btn-sm" onclick="confirmAction('Reset ALL data to defaults?',resetAll)">🗑 Reset All Data</button>
+          <button class="btn btn-danger btn-sm" onclick="confirmAction('Clear all gallery images?',clearGallery)">🖼️ Clear Gallery</button>
+          <button class="btn btn-danger btn-sm" onclick="confirmAction('Clear all projects?',clearProjects)">📁 Clear Projects</button>
+          <button class="btn btn-danger btn-sm" onclick="confirmAction('Disconnect GitHub? You will need to re-enter your token.',disconnectGitHub)">🔌 Disconnect GitHub</button>
         </div>
       </div>
     </div>
 
-    <!-- ===== ACTIVITY LOG ===== -->
+    <!-- LOG -->
     <div class="page" id="page-log">
       <div class="card">
         <div class="card-header">
@@ -1097,8 +554,8 @@
       </div>
     </div>
 
-  </div><!-- /main-content -->
-</div><!-- /app -->
+  </div>
+</div>
 
 <!-- PROJECT MODAL -->
 <div class="modal-overlay" id="projectModal">
@@ -1107,45 +564,15 @@
       <div class="modal-title" id="modalTitle">Add Project</div>
       <button class="modal-close" onclick="closeModal('projectModal')">✕</button>
     </div>
-    <div class="form-group">
-      <label class="form-label">Project Name</label>
-      <input class="form-input" id="pName" placeholder="e.g. US Air Force Base" />
-    </div>
-    <div class="form-group">
-      <label class="form-label">Short Description</label>
-      <textarea class="form-textarea" id="pDesc" rows="3" placeholder="Brief description of the project…"></textarea>
-    </div>
+    <div class="form-group"><label class="form-label">Project Name</label><input class="form-input" id="pName" placeholder="e.g. US Air Force Base" /></div>
+    <div class="form-group"><label class="form-label">Short Description</label><textarea class="form-textarea" id="pDesc" rows="3" placeholder="Brief description…"></textarea></div>
     <div class="form-row">
-      <div class="form-group">
-        <label class="form-label">Status</label>
-        <select class="form-select" id="pStatus">
-          <option value="live">Live</option>
-          <option value="unreleased">Unreleased</option>
-          <option value="wip">Work In Progress</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Platform</label>
-        <select class="form-select" id="pPlatform">
-          <option value="roblox">Roblox</option>
-          <option value="youtube">YouTube</option>
-          <option value="both">Both</option>
-          <option value="none">None / Internal</option>
-        </select>
-      </div>
+      <div class="form-group"><label class="form-label">Status</label><select class="form-select" id="pStatus"><option value="live">Live</option><option value="unreleased">Unreleased</option><option value="wip">Work In Progress</option></select></div>
+      <div class="form-group"><label class="form-label">Platform</label><select class="form-select" id="pPlatform"><option value="roblox">Roblox</option><option value="youtube">YouTube</option><option value="both">Both</option><option value="none">None</option></select></div>
     </div>
-    <div class="form-group">
-      <label class="form-label">Roblox Link (optional)</label>
-      <input class="form-input" id="pRoblox" placeholder="https://www.roblox.com/…" />
-    </div>
-    <div class="form-group">
-      <label class="form-label">YouTube Link (optional)</label>
-      <input class="form-input" id="pYoutube" placeholder="https://youtu.be/…" />
-    </div>
-    <div class="form-group">
-      <label class="form-label">Discord Link (optional)</label>
-      <input class="form-input" id="pDiscord" placeholder="https://discord.gg/…" />
-    </div>
+    <div class="form-group"><label class="form-label">Roblox Link</label><input class="form-input" id="pRoblox" placeholder="https://www.roblox.com/…" /></div>
+    <div class="form-group"><label class="form-label">YouTube Link</label><input class="form-input" id="pYoutube" placeholder="https://youtu.be/…" /></div>
+    <div class="form-group"><label class="form-label">Discord Link</label><input class="form-input" id="pDiscord" placeholder="https://discord.gg/…" /></div>
     <div class="modal-footer">
       <button class="btn btn-ghost" onclick="closeModal('projectModal')">Cancel</button>
       <button class="btn btn-primary" onclick="saveProject()">💾 Save Project</button>
@@ -1153,12 +580,12 @@
   </div>
 </div>
 
-<!-- CONFIRM DIALOG -->
+<!-- CONFIRM -->
 <div class="confirm-overlay" id="confirmOverlay">
   <div class="confirm-box">
     <div class="confirm-icon">⚠️</div>
     <div class="confirm-title">Are you sure?</div>
-    <div class="confirm-text" id="confirmText">This action cannot be undone.</div>
+    <div class="confirm-text" id="confirmText"></div>
     <div class="confirm-actions">
       <button class="btn btn-ghost" onclick="closeConfirm()">Cancel</button>
       <button class="btn btn-danger" id="confirmBtn">Confirm</button>
@@ -1166,660 +593,464 @@
   </div>
 </div>
 
-<!-- TOAST CONTAINER -->
 <div id="toastContainer"></div>
 
+<!-- ══════════════════════════════════════════════════════
+     JAVASCRIPT
+══════════════════════════════════════════════════════ -->
 <script>
-/* ============================================================
-   STATE & STORAGE
-============================================================ */
-const STORAGE_KEY = 'lukdevx_admin';
+const SK = 'lukdevx_admin_v2';
 const DEFAULT_PIN = '3872';
 
 let state = {
   pin: DEFAULT_PIN,
-  projects: [
-    {
-      id: 1, name: 'US Air Force Base',
-      desc: 'An ambitious concept project set on a military air force base. Built to explore large-scale map design and immersive environmental storytelling.',
-      status: 'unreleased', platform: 'youtube',
-      roblox: '', youtube: 'https://youtu.be/t8nMdNApc6o?is=oT12YOR_n7XGS7JI', discord: ''
-    },
-    {
-      id: 2, name: 'Lyndale Leisure Centre',
-      desc: 'A vibrant waterpark featuring many cool slides and interactive attractions. A full leisure experience built for fun and replayability.',
-      status: 'live', platform: 'both',
-      roblox: 'https://www.roblox.com/share?code=e7cde0035ebd064c94f7192295b411d5&type=ExperienceDetails&stamp=1774806230069',
-      youtube: '', discord: 'https://discord.gg/x7XQ4q8MCt'
-    }
+  gh: { token:'', user:'lukas-56376', repo:'Roblox_Studio_Portfolio', branch:'main', file:'index.html' },
+  projects:[
+    {id:1,name:'US Air Force Base',desc:'An ambitious concept project set on a military air force base. Built to explore large-scale map design and immersive environmental storytelling.',status:'unreleased',platform:'youtube',roblox:'',youtube:'https://youtu.be/t8nMdNApc6o?is=oT12YOR_n7XGS7JI',discord:''},
+    {id:2,name:'Lyndale Leisure Centre',desc:'A vibrant waterpark featuring many cool slides and interactive attractions. A full leisure experience built for fun and replayability.',status:'live',platform:'both',roblox:'https://www.roblox.com/share?code=e7cde0035ebd064c94f7192295b411d5&type=ExperienceDetails&stamp=1774806230069',youtube:'',discord:'https://discord.gg/x7XQ4q8MCt'}
   ],
-  gallery: Array.from({length: 12}, (_, i) => ({
-    id: i+1, src: `https://lukas-56376.github.io/Roblox_Studio_Portfolio/project${i+1}.png`,
-    name: `project${i+1}.png`, isLocal: false
-  })),
-  skills: ['Building','Scripting','Bug Fixing','GUI Creation'],
-  systems: ['Adonis','DRS','JSM','EAS'],
-  goals: [
-    'Improve GUI design skills and create more polished interfaces',
-    'Work on bigger and more ambitious Roblox projects',
-    'Gain real experience in professional development teams'
-  ],
-  bio: {
-    name:'Lukas', age:14, exp:'6 months',
-    text:"Hey, I am Lukas and I am 14 years old. I have been developing in Roblox Studio for around 6 months now. I am new to development, but I am always motivated and I want to learn. Every project is a step forward — and I'm committed to becoming a better developer with every build.",
-    status:'available',
-    discord:'https://discord.com/users/1474121522376347861'
-  },
-  settings: { availability:true, projNums:true, lightbox:true, animations:true },
-  log: []
+  gallery: Array.from({length:12},(_,i)=>({id:i+1,src:`https://lukas-56376.github.io/Roblox_Studio_Portfolio/project${i+1}.png`,name:`project${i+1}.png`,isLocal:false})),
+  skills:['Building','Scripting','Bug Fixing','GUI Creation'],
+  systems:['Adonis','DRS','JSM','EAS'],
+  goals:['Improve GUI design skills and create more polished interfaces','Work on bigger and more ambitious Roblox projects','Gain real experience in professional development teams'],
+  bio:{name:'Lukas',age:14,exp:'6 months',text:"Hey, I am Lukas and I am 14 years old. I have been developing in Roblox Studio for around 6 months now. I am new to development, but I am always motivated and I want to learn. Every project is a step forward — and I'm committed to becoming a better developer with every build.",status:'available',discord:'https://discord.com/users/1474121522376347861'},
+  settings:{availability:true,projNums:true,lightbox:true,animations:true},
+  log:[]
 };
 
-let editingProjectId = null;
-let confirmCallback = null;
-let pinBuffer = '';
+let editingProjectId = null, pinBuffer = '';
 
-// Load from localStorage
-function loadState() {
-  try {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) {
-      const parsed = JSON.parse(saved);
-      state = { ...state, ...parsed };
-    }
-  } catch(e) {}
-}
+// ── STORAGE ──────────────────────────────────
+function load(){try{const s=localStorage.getItem(SK);if(s)state={...state,...JSON.parse(s)};}catch(e){}}
+function save(){localStorage.setItem(SK,JSON.stringify(state));}
+load();
 
-function saveState() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-}
+// ── LOCK ──────────────────────────────────────
+function numPress(n){if(pinBuffer.length>=4)return;pinBuffer+=n;updateDots();if(pinBuffer.length===4)setTimeout(checkPin,150);}
+function numDel(){pinBuffer=pinBuffer.slice(0,-1);updateDots();document.getElementById('lockError').classList.remove('show');}
+function updateDots(){for(let i=0;i<4;i++){const d=document.getElementById('d'+i);d.className='pin-dot'+(i<pinBuffer.length?' filled':'');}}
 
-loadState();
-
-/* ============================================================
-   LOCK SCREEN
-============================================================ */
-function numPress(n) {
-  if (pinBuffer.length >= 4) return;
-  pinBuffer += n;
-  updateDots();
-  if (pinBuffer.length === 4) {
-    setTimeout(checkPin, 150);
-  }
-}
-
-function numDel() {
-  pinBuffer = pinBuffer.slice(0, -1);
-  updateDots();
-  document.getElementById('lockError').classList.remove('show');
-}
-
-function updateDots() {
-  for (let i = 0; i < 4; i++) {
-    const d = document.getElementById('d' + i);
-    d.className = 'pin-dot' + (i < pinBuffer.length ? ' filled' : '');
-  }
-}
-
-function checkPin() {
-  if (pinBuffer === state.pin) {
-    document.getElementById('lockScreen').style.transition = 'opacity 0.5s';
-    document.getElementById('lockScreen').style.opacity = '0';
-    setTimeout(() => {
-      document.getElementById('lockScreen').style.display = 'none';
-      document.getElementById('app').classList.add('visible');
-      initApp();
-    }, 500);
+function checkPin(){
+  if(pinBuffer===state.pin){
+    const ls=document.getElementById('lockScreen');
+    ls.style.transition='opacity 0.4s';ls.style.opacity='0';
+    setTimeout(()=>{
+      ls.classList.add('hidden');
+      if(!state.gh.token){
+        document.getElementById('setupScreen').classList.remove('hidden');
+      } else {
+        launchApp();
+      }
+    },400);
   } else {
-    for (let i = 0; i < 4; i++) {
-      document.getElementById('d' + i).className = 'pin-dot error';
-    }
+    for(let i=0;i<4;i++)document.getElementById('d'+i).className='pin-dot error';
     document.getElementById('lockError').classList.add('show');
-    setTimeout(() => {
-      pinBuffer = '';
-      updateDots();
-      document.getElementById('lockError').classList.remove('show');
-    }, 1200);
+    setTimeout(()=>{pinBuffer='';updateDots();document.getElementById('lockError').classList.remove('show');},1200);
   }
 }
 
-// Keyboard support
-document.addEventListener('keydown', e => {
-  if (document.getElementById('lockScreen').style.display === 'none') return;
-  if (e.key >= '0' && e.key <= '9') numPress(e.key);
-  if (e.key === 'Backspace') numDel();
+document.addEventListener('keydown',e=>{
+  if(!document.getElementById('lockScreen').classList.contains('hidden'))return;
+  // don't intercept when typing in inputs
+  if(document.activeElement.tagName==='INPUT'||document.activeElement.tagName==='TEXTAREA')return;
+  if(e.key>='0'&&e.key<='9')numPress(e.key);
+  if(e.key==='Backspace')numDel();
 });
 
-/* ============================================================
-   APP INIT
-============================================================ */
-function initApp() {
-  renderProjects();
-  renderGallery();
-  renderSkills();
-  renderSystems();
-  renderGoals();
-  renderLog('dashLog', 5);
-  renderLog('fullLog');
-  updateStats();
-  loadBioForm();
-  loadSettings();
-  renderExports();
-  startSessionTimer();
+// ── SETUP ─────────────────────────────────────
+function saveSetup(){
+  const t=document.getElementById('setupToken').value.trim();
+  const u=document.getElementById('setupUser').value.trim();
+  const r=document.getElementById('setupRepo').value.trim();
+  const b=document.getElementById('setupBranch').value.trim();
+  const f=document.getElementById('setupFile').value.trim();
+  if(!t||!u||!r){toast('Please fill in all fields','error');return;}
+  state.gh={token:t,user:u,repo:r,branch:b||'main',file:f||'index.html'};
+  save();
+  document.getElementById('setupScreen').classList.add('hidden');
+  launchApp();
 }
 
-/* ============================================================
-   NAVIGATION
-============================================================ */
-function navigate(page, btn) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('page-' + page).classList.add('active');
-  if (btn) btn.classList.add('active');
-
-  const titles = {
-    dashboard:'Dashboard', projects:'Projects', gallery:'Gallery',
-    about:'About & Bio', skills:'Skills', goals:'Goals',
-    export:'Export Code', settings:'Settings', log:'Activity Log'
-  };
-  document.getElementById('topbarTitle').textContent = titles[page] || page;
-  if (page === 'export') renderExports();
+// ── APP INIT ──────────────────────────────────
+function launchApp(){
+  document.getElementById('app').style.display='flex';
+  initApp();
 }
 
-/* ============================================================
-   PROJECTS
-============================================================ */
-function renderProjects() {
-  const list = document.getElementById('projectList');
-  if (!state.projects.length) {
-    list.innerHTML = '<p style="color:var(--muted);font-size:0.9rem;text-align:center;padding:24px;">No projects yet. Add one!</p>';
-    return;
+function initApp(){
+  renderProjects();renderGallery();renderSkills();renderSystems();
+  renderGoals();renderLog('dashLog',5);renderLog('fullLog');
+  updateStats();loadBioForm();loadSettings();loadGhForm();
+  updateGhBadge();startSessionTimer();refreshPreview();
+}
+
+// ── NAVIGATION ───────────────────────────────
+function navigate(page,btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('page-'+page).classList.add('active');
+  if(btn)btn.classList.add('active');
+  const titles={dashboard:'Dashboard',projects:'Projects',gallery:'Gallery',about:'About & Bio',skills:'Skills',goals:'Goals',deploy:'Deploy to GitHub',settings:'Settings',log:'Activity Log'};
+  document.getElementById('topbarTitle').textContent=titles[page]||page;
+  if(page==='deploy'){loadGhForm();refreshPreview();}
+}
+
+// ── GITHUB ───────────────────────────────────
+function loadGhForm(){
+  document.getElementById('ghToken').value=state.gh.token||'';
+  document.getElementById('ghUser').value=state.gh.user||'';
+  document.getElementById('ghRepo').value=state.gh.repo||'';
+  document.getElementById('ghBranch').value=state.gh.branch||'main';
+  document.getElementById('ghFile').value=state.gh.file||'index.html';
+}
+
+function saveGitHubConfig(){
+  state.gh.token=document.getElementById('ghToken').value.trim();
+  state.gh.user=document.getElementById('ghUser').value.trim();
+  state.gh.repo=document.getElementById('ghRepo').value.trim();
+  state.gh.branch=document.getElementById('ghBranch').value.trim()||'main';
+  state.gh.file=document.getElementById('ghFile').value.trim()||'index.html';
+  save();updateGhBadge();
+  toast('GitHub config saved!','success');
+}
+
+function updateGhBadge(){
+  const b=document.getElementById('ghBadge');
+  if(state.gh.token){
+    b.className='gh-badge connected';
+    b.textContent='🟢 '+state.gh.user+'/'+state.gh.repo;
+  } else {
+    b.className='gh-badge';b.textContent='⚪ Not connected';
   }
-  list.innerHTML = state.projects.map((p, i) => `
+}
+
+async function testConnection(){
+  if(!state.gh.token){toast('No token saved. Go to Deploy → GitHub Connection first.','error');return;}
+  toast('Testing connection…','info');
+  try{
+    const r=await fetch(`https://api.github.com/repos/${state.gh.user}/${state.gh.repo}`,{
+      headers:{Authorization:`token ${state.gh.token}`,'Accept':'application/vnd.github.v3+json'}
+    });
+    if(r.ok){toast('✅ Connected! Repository found.','success');updateGhBadge();}
+    else{const d=await r.json();toast('❌ Error: '+d.message,'error');}
+  }catch(e){toast('Network error: '+e.message,'error');}
+}
+
+async function deployToGitHub(){
+  if(!state.gh.token){toast('No GitHub token. Configure it below.','error');return;}
+  const btn=document.getElementById('deployBtn');
+  const status=document.getElementById('deployStatus');
+  btn.disabled=true;btn.textContent='⏳ Deploying…';
+  status.className='deploy-status show';status.textContent='Connecting to GitHub API…';
+
+  try{
+    const {token,user,repo,branch,file}=state.gh;
+    const apiBase=`https://api.github.com/repos/${user}/${repo}/contents/${file}`;
+    const headers={Authorization:`token ${token}`,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'};
+
+    // 1. Get current file SHA
+    status.textContent='Getting current file SHA…';
+    const getRes=await fetch(`${apiBase}?ref=${branch}`,{headers});
+    let sha='';
+    if(getRes.ok){const d=await getRes.json();sha=d.sha;}
+    else if(getRes.status!==404){const d=await getRes.json();throw new Error(d.message);}
+
+    // 2. Build new HTML
+    status.textContent='Building new index.html…';
+    const newHTML=buildIndexHTML();
+    const encoded=btoa(unescape(encodeURIComponent(newHTML)));
+
+    // 3. PUT to GitHub
+    status.textContent='Uploading to GitHub…';
+    const body={message:`Admin Panel: update ${file} — ${new Date().toLocaleString('de-AT')}`,content:encoded,branch};
+    if(sha)body.sha=sha;
+    const putRes=await fetch(apiBase,{method:'PUT',headers,body:JSON.stringify(body)});
+    const putData=await putRes.json();
+
+    if(putRes.ok){
+      status.className='deploy-status show ok';
+      status.textContent=`✅ Deployed successfully!\n\nCommit: ${putData.commit.sha.slice(0,7)}\nMessage: ${putData.commit.message}\n\nYour site will update in ~30 seconds at:\nhttps://${user}.github.io/${repo}/`;
+      addLog('deploy',`Deployed index.html to GitHub (${putData.commit.sha.slice(0,7)})`);
+      renderLog('dashLog',5);renderLog('fullLog');
+      toast('🚀 Deployed live!','success');
+    } else {
+      throw new Error(putData.message||'Unknown GitHub API error');
+    }
+  }catch(e){
+    status.className='deploy-status show err';
+    status.textContent='❌ Deploy failed:\n'+e.message+'\n\nMake sure your token has "repo" permissions.';
+    toast('Deploy failed: '+e.message,'error');
+  }
+  btn.disabled=false;btn.textContent='🚀 Deploy Now';
+}
+
+// ── HTML BUILDER ─────────────────────────────
+function buildIndexHTML(){
+  const {bio,projects,gallery,skills,systems,goals,settings}=state;
+
+  const statusLabel={available:'Available for Projects',busy:'Currently Busy',open:'Open to Collabs'};
+
+  const projectsHTML=projects.map((p,i)=>{
+    const num=String(i+1).padStart(2,'0');
+    const links=[
+      p.youtube?`<a href="${p.youtube}" target="_blank" rel="noopener">▶ YouTube</a>`:'',
+      p.roblox?`<a href="${p.roblox}" target="_blank" rel="noopener">🎮 Roblox</a>`:'',
+      p.discord?`<a href="${p.discord}" target="_blank" rel="noopener">💬 Discord</a>`:''
+    ].filter(Boolean).join('\n        ');
+    return `      <li>
+        ${settings.projNums?`<span>Project ${num}</span>`:''}
+        <span>${p.status.charAt(0).toUpperCase()+p.status.slice(1)}</span>
+        <h3>${esc(p.name)}</h3>
+        <p>${esc(p.desc)}</p>
+        ${links}
+      </li>`;
+  }).join('\n');
+
+  const galleryHTML=gallery.map((img,i)=>
+    `      <img src="${img.src}" alt="Project screenshot ${i+1}" />`
+  ).join('\n');
+
+  const skillsHTML=skills.map(s=>`      <p>${esc(s)}</p>`).join('\n');
+  const systemsHTML=`      <p>${systems.map(s=>esc(s)).join(' • ')}</p>`;
+  const goalsHTML=goals.map(g=>`      <p>✦ ${esc(g)}</p>`).join('\n');
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LUK.DEVX</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <nav>
+      <a href="#about">About</a>
+      <a href="#projects">Projects</a>
+      <a href="#gallery">Gallery</a>
+      <a href="#skills">Skills</a>
+      <a href="#goals">Goals</a>
+    </nav>
+    ${settings.availability?`<span>${statusLabel[bio.status]||'Available for Projects'}</span>`:''}
+  </header>
+
+  <h1>Roblox Studio Developer</h1>
+
+  <section id="about">
+    <h2>Who Am I</h2>
+    <p>${esc(bio.text)}</p>
+    <a href="${esc(bio.discord)}" target="_blank" rel="noopener">↗ Contact on Discord</a>
+  </section>
+
+  <section id="projects">
+    <h2>My Work</h2>
+    <ul>
+${projectsHTML}
+    </ul>
+  </section>
+
+  <section id="gallery">
+    <h2>Screenshots</h2>
+${galleryHTML}
+  </section>
+
+  <section id="skills">
+    <h2>Capabilities</h2>
+    <h3>Core Skills</h3>
+${skillsHTML}
+    <h3>Systems Setup</h3>
+${systemsHTML}
+  </section>
+
+  <section id="goals">
+    <h2>Where I'm Headed</h2>
+${goalsHTML}
+  </section>
+
+  <footer>
+    <p>LUK.DEVX — Roblox Studio Portfolio</p>
+    <p>© ${bio.name} Roblox Portfolio</p>
+  </footer>
+</body>
+</html>`;
+}
+
+function refreshPreview(){
+  document.getElementById('previewHTML').textContent=buildIndexHTML();
+}
+function copyPreview(){
+  navigator.clipboard.writeText(buildIndexHTML()).then(()=>toast('HTML copied!','success'));
+}
+
+// ── PROJECTS ─────────────────────────────────
+function renderProjects(){
+  const list=document.getElementById('projectList');
+  if(!state.projects.length){list.innerHTML='<p style="color:var(--muted);text-align:center;padding:24px;">No projects yet.</p>';updateStats();return;}
+  list.innerHTML=state.projects.map((p,i)=>`
     <div class="project-item">
       <div class="project-item-left">
         <div class="project-num">PROJECT ${String(i+1).padStart(2,'0')}</div>
-        <div class="project-name">${escHtml(p.name)}</div>
-        <div class="project-desc">${escHtml(p.desc)}</div>
+        <div class="project-name">${esc(p.name)}</div>
+        <div class="project-desc">${esc(p.desc)}</div>
         <div class="project-tags">
           <span class="tag tag-${p.status}">${p.status.toUpperCase()}</span>
-          ${p.roblox ? '<span class="tag tag-live">🎮 Roblox</span>' : ''}
-          ${p.youtube ? '<span class="tag tag-wip">▶ YouTube</span>' : ''}
-          ${p.discord ? '<span class="tag tag-wip">💬 Discord</span>' : ''}
+          ${p.roblox?'<span class="tag tag-live">🎮 Roblox</span>':''}
+          ${p.youtube?'<span class="tag tag-wip">▶ YouTube</span>':''}
+          ${p.discord?'<span class="tag tag-wip">💬 Discord</span>':''}
         </div>
       </div>
       <div class="project-actions">
         <button class="btn btn-ghost btn-sm" onclick="editProject(${p.id})">✏️ Edit</button>
-        <button class="btn btn-danger btn-sm" onclick="confirmAction('Delete project &ldquo;${escHtml(p.name)}&rdquo;?', () => deleteProject(${p.id}))">🗑</button>
+        <button class="btn btn-danger btn-sm" onclick="confirmAction('Delete &ldquo;${esc(p.name)}&rdquo;?',()=>deleteProject(${p.id}))">🗑</button>
       </div>
-    </div>
-  `).join('');
+    </div>`).join('');
   updateStats();
 }
 
-function openProjectModal(id) {
-  editingProjectId = id || null;
-  const modal = document.getElementById('projectModal');
-  document.getElementById('modalTitle').textContent = id ? 'Edit Project' : 'Add Project';
-  if (id) {
-    const p = state.projects.find(x => x.id === id);
-    document.getElementById('pName').value = p.name;
-    document.getElementById('pDesc').value = p.desc;
-    document.getElementById('pStatus').value = p.status;
-    document.getElementById('pPlatform').value = p.platform;
-    document.getElementById('pRoblox').value = p.roblox || '';
-    document.getElementById('pYoutube').value = p.youtube || '';
-    document.getElementById('pDiscord').value = p.discord || '';
+function openProjectModal(id){
+  editingProjectId=id||null;
+  document.getElementById('modalTitle').textContent=id?'Edit Project':'Add Project';
+  if(id){
+    const p=state.projects.find(x=>x.id===id);
+    document.getElementById('pName').value=p.name;
+    document.getElementById('pDesc').value=p.desc;
+    document.getElementById('pStatus').value=p.status;
+    document.getElementById('pPlatform').value=p.platform;
+    document.getElementById('pRoblox').value=p.roblox||'';
+    document.getElementById('pYoutube').value=p.youtube||'';
+    document.getElementById('pDiscord').value=p.discord||'';
   } else {
-    ['pName','pDesc','pRoblox','pYoutube','pDiscord'].forEach(id => document.getElementById(id).value = '');
-    document.getElementById('pStatus').value = 'unreleased';
-    document.getElementById('pPlatform').value = 'roblox';
+    ['pName','pDesc','pRoblox','pYoutube','pDiscord'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('pStatus').value='unreleased';
+    document.getElementById('pPlatform').value='roblox';
   }
-  modal.classList.add('open');
+  document.getElementById('projectModal').classList.add('open');
 }
 
-function editProject(id) { openProjectModal(id); }
+function editProject(id){openProjectModal(id);}
 
-function saveProject() {
-  const name = document.getElementById('pName').value.trim();
-  if (!name) { toast('Project name is required', 'error'); return; }
-  const data = {
-    name, desc: document.getElementById('pDesc').value.trim(),
-    status: document.getElementById('pStatus').value,
-    platform: document.getElementById('pPlatform').value,
-    roblox: document.getElementById('pRoblox').value.trim(),
-    youtube: document.getElementById('pYoutube').value.trim(),
-    discord: document.getElementById('pDiscord').value.trim()
-  };
-  if (editingProjectId) {
-    const idx = state.projects.findIndex(p => p.id === editingProjectId);
-    state.projects[idx] = { ...state.projects[idx], ...data };
-    addLog('edit', `Edited project: ${name}`);
-    toast(`Project "${name}" updated!`, 'success');
+function saveProject(){
+  const name=document.getElementById('pName').value.trim();
+  if(!name){toast('Project name required','error');return;}
+  const data={name,desc:document.getElementById('pDesc').value.trim(),status:document.getElementById('pStatus').value,platform:document.getElementById('pPlatform').value,roblox:document.getElementById('pRoblox').value.trim(),youtube:document.getElementById('pYoutube').value.trim(),discord:document.getElementById('pDiscord').value.trim()};
+  if(editingProjectId){
+    const idx=state.projects.findIndex(p=>p.id===editingProjectId);
+    state.projects[idx]={...state.projects[idx],...data};
+    addLog('edit','Edited project: '+name);
+    toast(`"${name}" updated!`,'success');
   } else {
-    data.id = Date.now();
-    state.projects.push(data);
-    addLog('add', `Added project: ${name}`);
-    toast(`Project "${name}" added!`, 'success');
+    data.id=Date.now();state.projects.push(data);
+    addLog('add','Added project: '+name);
+    toast(`"${name}" added!`,'success');
   }
-  saveState();
-  renderProjects();
-  renderLog('dashLog', 5);
-  renderLog('fullLog');
+  save();renderProjects();renderLog('dashLog',5);renderLog('fullLog');
   closeModal('projectModal');
 }
 
-function deleteProject(id) {
-  const p = state.projects.find(x => x.id === id);
-  state.projects = state.projects.filter(x => x.id !== id);
-  addLog('del', `Deleted project: ${p.name}`);
-  saveState();
-  renderProjects();
-  renderLog('dashLog', 5);
-  renderLog('fullLog');
-  toast(`Project deleted`, 'info');
+function deleteProject(id){
+  const p=state.projects.find(x=>x.id===id);
+  state.projects=state.projects.filter(x=>x.id!==id);
+  addLog('del','Deleted project: '+p.name);
+  save();renderProjects();renderLog('dashLog',5);renderLog('fullLog');
+  toast('Project deleted','info');
 }
 
-/* ============================================================
-   GALLERY
-============================================================ */
-function renderGallery() {
-  const grid = document.getElementById('galleryGrid');
-  const count = document.getElementById('galleryCount');
-  count.textContent = state.gallery.length + ' images';
-  grid.innerHTML = state.gallery.map((img, i) => `
+// ── GALLERY ──────────────────────────────────
+function renderGallery(){
+  const grid=document.getElementById('galleryGrid');
+  document.getElementById('galleryCount').textContent=state.gallery.length+' images';
+  grid.innerHTML=state.gallery.map((img,i)=>`
     <div class="gallery-item">
-      <img src="${img.src}" alt="${escHtml(img.name)}" loading="lazy"
-           onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22120%22><rect fill=%22%23141c2e%22 width=%22200%22 height=%22120%22/><text fill=%22%234a6080%22 font-size=%2212%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dominant-baseline=%22middle%22>No Image</text></svg>'" />
+      <img src="${img.src}" alt="${esc(img.name)}" loading="lazy"
+           onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22160%22 height=%22100%22><rect fill=%22%23141c2e%22 width=%22160%22 height=%22100%22/><text fill=%22%234a6080%22 font-size=%2211%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dominant-baseline=%22middle%22>No Image</text></svg>'" />
       <div class="gallery-num">${String(i+1).padStart(2,'0')}</div>
       <div class="gallery-item-overlay">
-        <button class="btn btn-ghost btn-sm" onclick="moveImage(${img.id}, -1)">◀</button>
-        <button class="btn btn-danger btn-sm" onclick="confirmAction('Remove this image?', () => removeImage(${img.id}))">🗑</button>
-        <button class="btn btn-ghost btn-sm" onclick="moveImage(${img.id}, 1)">▶</button>
+        <button class="btn btn-ghost btn-sm" onclick="moveImage(${img.id},-1)">◀</button>
+        <button class="btn btn-danger btn-sm" onclick="confirmAction('Remove this image?',()=>removeImage(${img.id}))">🗑</button>
+        <button class="btn btn-ghost btn-sm" onclick="moveImage(${img.id},1)">▶</button>
       </div>
-    </div>
-  `).join('');
+    </div>`).join('');
 }
 
-function handleFileInput(e) {
-  const files = Array.from(e.target.files);
-  processFiles(files);
-}
+function handleFileInput(e){processFiles(Array.from(e.target.files));}
+function handleDrop(e){e.preventDefault();document.getElementById('uploadZone').classList.remove('dragover');processFiles(Array.from(e.dataTransfer.files).filter(f=>f.type.startsWith('image/')));}
 
-function handleDrop(e) {
-  e.preventDefault();
-  document.getElementById('uploadZone').classList.remove('dragover');
-  const files = Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/'));
-  processFiles(files);
-}
-
-function processFiles(files) {
-  let loaded = 0;
-  files.forEach(file => {
-    const reader = new FileReader();
-    reader.onload = ev => {
-      const newImg = { id: Date.now() + Math.random(), src: ev.target.result, name: file.name, isLocal: true };
-      state.gallery.push(newImg);
-      loaded++;
-      if (loaded === files.length) {
-        saveState();
-        renderGallery();
-        updateStats();
-        addLog('upload', `Uploaded ${files.length} image(s): ${files.map(f=>f.name).join(', ')}`);
-        renderLog('dashLog', 5);
-        renderLog('fullLog');
-        toast(`${files.length} image(s) uploaded!`, 'success');
-      }
+function processFiles(files){
+  let done=0;
+  files.forEach(file=>{
+    const reader=new FileReader();
+    reader.onload=ev=>{
+      state.gallery.push({id:Date.now()+Math.random(),src:ev.target.result,name:file.name,isLocal:true});
+      if(++done===files.length){save();renderGallery();updateStats();addLog('upload','Uploaded '+files.length+' image(s)');renderLog('dashLog',5);renderLog('fullLog');toast(files.length+' image(s) uploaded!','success');}
     };
     reader.readAsDataURL(file);
   });
 }
 
-function removeImage(id) {
-  state.gallery = state.gallery.filter(x => x.id !== id);
-  saveState();
-  renderGallery();
-  updateStats();
-  addLog('del', 'Removed a gallery image');
-  renderLog('dashLog', 5);
-  toast('Image removed', 'info');
-}
+function removeImage(id){state.gallery=state.gallery.filter(x=>x.id!==id);save();renderGallery();updateStats();addLog('del','Removed gallery image');toast('Image removed','info');}
+function moveImage(id,dir){const i=state.gallery.findIndex(x=>x.id===id);const n=i+dir;if(n<0||n>=state.gallery.length)return;[state.gallery[i],state.gallery[n]]=[state.gallery[n],state.gallery[i]];save();renderGallery();}
 
-function moveImage(id, dir) {
-  const idx = state.gallery.findIndex(x => x.id === id);
-  const newIdx = idx + dir;
-  if (newIdx < 0 || newIdx >= state.gallery.length) return;
-  [state.gallery[idx], state.gallery[newIdx]] = [state.gallery[newIdx], state.gallery[idx]];
-  saveState();
-  renderGallery();
-}
+// ── SKILLS ───────────────────────────────────
+function renderSkills(){document.getElementById('skillChips').innerHTML=state.skills.map((s,i)=>`<span class="skill-chip">${esc(s)}<button class="skill-chip-del" onclick="removeSkill(${i})">✕</button></span>`).join('');}
+function addSkill(){const v=document.getElementById('newSkill').value.trim();if(!v)return;state.skills.push(v);document.getElementById('newSkill').value='';save();renderSkills();updateStats();addLog('add','Added skill: '+v);toast('"'+v+'" added','success');}
+function removeSkill(i){const n=state.skills[i];state.skills.splice(i,1);save();renderSkills();updateStats();addLog('del','Removed skill: '+n);toast('Removed','info');}
 
-/* ============================================================
-   SKILLS
-============================================================ */
-function renderSkills() {
-  document.getElementById('skillChips').innerHTML = state.skills.map((s, i) => `
-    <span class="skill-chip">${escHtml(s)}<button class="skill-chip-del" onclick="removeSkill(${i})" title="Remove">✕</button></span>
-  `).join('');
-}
+function renderSystems(){document.getElementById('systemChips').innerHTML=state.systems.map((s,i)=>`<span class="skill-chip">${esc(s)}<button class="skill-chip-del" onclick="removeSystem(${i})">✕</button></span>`).join('');}
+function addSystem(){const v=document.getElementById('newSystem').value.trim();if(!v)return;state.systems.push(v);document.getElementById('newSystem').value='';save();renderSystems();addLog('add','Added system: '+v);toast('"'+v+'" added','success');}
+function removeSystem(i){const n=state.systems[i];state.systems.splice(i,1);save();renderSystems();addLog('del','Removed system: '+n);toast('Removed','info');}
 
-function addSkill() {
-  const v = document.getElementById('newSkill').value.trim();
-  if (!v) return;
-  state.skills.push(v);
-  document.getElementById('newSkill').value = '';
-  saveState(); renderSkills(); updateStats();
-  addLog('add', `Added skill: ${v}`);
-  toast(`Skill "${v}" added`, 'success');
-}
+// ── GOALS ────────────────────────────────────
+function renderGoals(){document.getElementById('goalList').innerHTML=state.goals.map((g,i)=>`
+  <div class="project-item" style="align-items:center;">
+    <div style="color:var(--neon);font-size:1.2rem;margin-right:4px;">✦</div>
+    <div class="project-item-left"><textarea class="form-textarea" rows="2" style="min-height:unset;" onchange="updateGoal(${i},this.value)">${esc(g)}</textarea></div>
+    <div class="project-actions"><button class="btn btn-danger btn-sm" onclick="removeGoal(${i})">🗑</button></div>
+  </div>`).join('');}
+function addGoal(){state.goals.push('New goal…');save();renderGoals();updateStats();addLog('add','Added goal');toast('Goal added','success');}
+function updateGoal(i,v){state.goals[i]=v;save();addLog('edit','Updated goal '+(i+1));}
+function removeGoal(i){state.goals.splice(i,1);save();renderGoals();updateStats();addLog('del','Removed goal');toast('Removed','info');}
 
-function removeSkill(i) {
-  const name = state.skills[i];
-  state.skills.splice(i, 1);
-  saveState(); renderSkills(); updateStats();
-  addLog('del', `Removed skill: ${name}`);
-  toast(`Skill removed`, 'info');
-}
+// ── ABOUT ────────────────────────────────────
+function loadBioForm(){const b=state.bio;document.getElementById('bioName').value=b.name;document.getElementById('bioAge').value=b.age;document.getElementById('bioExp').value=b.exp;document.getElementById('bioText').value=b.text;document.getElementById('bioStatus').value=b.status;document.getElementById('bioDiscord').value=b.discord;}
+function saveAbout(){state.bio={name:document.getElementById('bioName').value,age:document.getElementById('bioAge').value,exp:document.getElementById('bioExp').value,text:document.getElementById('bioText').value,status:document.getElementById('bioStatus').value,discord:document.getElementById('bioDiscord').value};save();addLog('edit','Updated bio');toast('Bio saved!','success');}
 
-function renderSystems() {
-  document.getElementById('systemChips').innerHTML = state.systems.map((s, i) => `
-    <span class="skill-chip">${escHtml(s)}<button class="skill-chip-del" onclick="removeSystem(${i})" title="Remove">✕</button></span>
-  `).join('');
-}
+// ── SETTINGS ─────────────────────────────────
+function loadSettings(){const s=state.settings;setT('toggleAvailability',s.availability);setT('toggleProjNums',s.projNums);setT('toggleLightbox',s.lightbox);setT('toggleAnimations',s.animations);}
+function setT(id,v){const el=document.getElementById(id);v?el.classList.add('on'):el.classList.remove('on');}
+function toggleSetting(btn){btn.classList.toggle('on');const map={toggleAvailability:'availability',toggleProjNums:'projNums',toggleLightbox:'lightbox',toggleAnimations:'animations'};state.settings[map[btn.id]]=btn.classList.contains('on');save();toast('Setting updated','info');}
+function changePin(){const np=document.getElementById('newPin').value;const cp=document.getElementById('confirmPin').value;if(np.length!==4||!/^\d{4}$/.test(np)){toast('PIN must be 4 digits','error');return;}if(np!==cp){toast('PINs do not match','error');return;}state.pin=np;save();document.getElementById('newPin').value='';document.getElementById('confirmPin').value='';addLog('edit','PIN changed');toast('PIN updated!','success');}
 
-function addSystem() {
-  const v = document.getElementById('newSystem').value.trim();
-  if (!v) return;
-  state.systems.push(v);
-  document.getElementById('newSystem').value = '';
-  saveState(); renderSystems();
-  addLog('add', `Added system tag: ${v}`);
-  toast(`System "${v}" added`, 'success');
-}
+// ── STATS ─────────────────────────────────────
+function updateStats(){document.getElementById('stat-projects').textContent=state.projects.length;document.getElementById('stat-gallery').textContent=state.gallery.length;document.getElementById('stat-skills').textContent=state.skills.length;document.getElementById('stat-goals').textContent=state.goals.length;}
 
-function removeSystem(i) {
-  const name = state.systems[i];
-  state.systems.splice(i, 1);
-  saveState(); renderSystems();
-  addLog('del', `Removed system: ${name}`);
-  toast('System removed', 'info');
-}
+// ── LOG ──────────────────────────────────────
+function addLog(type,text){const time=new Date().toLocaleTimeString('de-AT',{hour:'2-digit',minute:'2-digit'});state.log.unshift({type,text,time});if(state.log.length>80)state.log.pop();save();}
+function renderLog(id,limit){const c=document.getElementById(id);if(!c)return;const items=limit?state.log.slice(0,limit):state.log;if(!items.length){c.innerHTML='<p style="color:var(--muted);font-size:0.85rem;padding:8px 0;">No activity yet.</p>';return;}c.innerHTML=items.map(l=>`<div class="log-item"><div class="log-dot ${l.type}"></div><div class="log-text">${esc(l.text)}</div><div class="log-time">${l.time}</div></div>`).join('');}
+function clearLog(){confirmAction('Clear all logs?',()=>{state.log=[];save();renderLog('dashLog',5);renderLog('fullLog');toast('Log cleared','info');});}
 
-/* ============================================================
-   GOALS
-============================================================ */
-function renderGoals() {
-  const list = document.getElementById('goalList');
-  list.innerHTML = state.goals.map((g, i) => `
-    <div class="project-item" style="align-items:center;">
-      <div style="color:var(--neon);font-size:1.2rem;margin-right:4px;">✦</div>
-      <div class="project-item-left">
-        <textarea class="form-textarea" rows="2" style="min-height:unset;"
-          onchange="updateGoal(${i}, this.value)">${escHtml(g)}</textarea>
-      </div>
-      <div class="project-actions">
-        <button class="btn btn-danger btn-sm" onclick="removeGoal(${i})">🗑</button>
-      </div>
-    </div>
-  `).join('');
-}
+// ── MODALS ───────────────────────────────────
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+function confirmAction(text,cb){document.getElementById('confirmText').textContent=text;document.getElementById('confirmOverlay').classList.add('open');document.getElementById('confirmBtn').onclick=()=>{cb();closeConfirm();};}
+function closeConfirm(){document.getElementById('confirmOverlay').classList.remove('open');}
 
-function addGoal() {
-  state.goals.push('New goal…');
-  saveState(); renderGoals(); updateStats();
-  addLog('add', 'Added a new goal');
-  toast('Goal added', 'success');
-}
+// ── RESET ────────────────────────────────────
+function resetAll(){localStorage.removeItem(SK);toast('Resetting…','info');setTimeout(()=>location.reload(),1000);}
+function clearGallery(){state.gallery=[];save();renderGallery();updateStats();addLog('del','Cleared gallery');toast('Gallery cleared','info');}
+function clearProjects(){state.projects=[];save();renderProjects();updateStats();addLog('del','Cleared projects');toast('Projects cleared','info');}
+function disconnectGitHub(){state.gh.token='';save();loadGhForm();updateGhBadge();toast('GitHub disconnected','info');}
 
-function updateGoal(i, val) {
-  state.goals[i] = val;
-  saveState();
-  addLog('edit', `Updated goal ${i+1}`);
-}
+// ── TOAST ────────────────────────────────────
+function toast(msg,type='info'){const icons={success:'✅',error:'❌',info:'ℹ️'};const el=document.createElement('div');el.className=`toast ${type}`;el.innerHTML=`<span class="toast-icon">${icons[type]}</span>${esc(msg)}`;document.getElementById('toastContainer').appendChild(el);setTimeout(()=>el.remove(),3000);}
 
-function removeGoal(i) {
-  state.goals.splice(i, 1);
-  saveState(); renderGoals(); updateStats();
-  addLog('del', 'Removed a goal');
-  toast('Goal removed', 'info');
-}
+// ── SESSION TIMER ────────────────────────────
+function startSessionTimer(){const s=Date.now();setInterval(()=>{const t=Math.floor((Date.now()-s)/1000);document.getElementById('sessionTime').textContent=String(Math.floor(t/60)).padStart(2,'0')+':'+String(t%60).padStart(2,'0');},1000);}
 
-/* ============================================================
-   ABOUT
-============================================================ */
-function loadBioForm() {
-  document.getElementById('bioName').value = state.bio.name;
-  document.getElementById('bioAge').value = state.bio.age;
-  document.getElementById('bioExp').value = state.bio.exp;
-  document.getElementById('bioText').value = state.bio.text;
-  document.getElementById('bioStatus').value = state.bio.status;
-  document.getElementById('bioDiscord').value = state.bio.discord;
-}
+// ── LOGOUT ───────────────────────────────────
+function logout(){document.getElementById('app').style.display='none';const ls=document.getElementById('lockScreen');ls.classList.remove('hidden');ls.style.opacity='1';ls.style.transition='';pinBuffer='';updateDots();}
 
-function saveAbout() {
-  state.bio = {
-    name: document.getElementById('bioName').value,
-    age: document.getElementById('bioAge').value,
-    exp: document.getElementById('bioExp').value,
-    text: document.getElementById('bioText').value,
-    status: document.getElementById('bioStatus').value,
-    discord: document.getElementById('bioDiscord').value
-  };
-  saveState();
-  addLog('edit', 'Updated About / Bio section');
-  toast('Bio saved!', 'success');
-}
-
-/* ============================================================
-   SETTINGS
-============================================================ */
-function loadSettings() {
-  const s = state.settings;
-  setToggle('toggleAvailability', s.availability);
-  setToggle('toggleProjNums', s.projNums);
-  setToggle('toggleLightbox', s.lightbox);
-  setToggle('toggleAnimations', s.animations);
-}
-
-function setToggle(id, val) {
-  const el = document.getElementById(id);
-  if (val) el.classList.add('on'); else el.classList.remove('on');
-}
-
-function toggleSetting(btn) {
-  btn.classList.toggle('on');
-  const map = {
-    toggleAvailability: 'availability',
-    toggleProjNums: 'projNums',
-    toggleLightbox: 'lightbox',
-    toggleAnimations: 'animations'
-  };
-  const key = map[btn.id];
-  state.settings[key] = btn.classList.contains('on');
-  saveState();
-  toast(`Setting updated`, 'info');
-}
-
-function changePin() {
-  const np = document.getElementById('newPin').value;
-  const cp = document.getElementById('confirmPin').value;
-  if (np.length !== 4 || !/^\d{4}$/.test(np)) { toast('PIN must be exactly 4 digits', 'error'); return; }
-  if (np !== cp) { toast('PINs do not match', 'error'); return; }
-  state.pin = np;
-  saveState();
-  document.getElementById('newPin').value = '';
-  document.getElementById('confirmPin').value = '';
-  addLog('edit', 'Admin PIN changed');
-  toast('PIN updated successfully!', 'success');
-}
-
-/* ============================================================
-   EXPORT
-============================================================ */
-function renderExports() {
-  // Projects HTML
-  document.getElementById('exportProjects').textContent = state.projects.map((p, i) => {
-    const num = String(i+1).padStart(2,'0');
-    const links = [
-      p.youtube ? `<a href="${p.youtube}" target="_blank" rel="noopener">▶ YouTube</a>` : '',
-      p.roblox  ? `<a href="${p.roblox}"  target="_blank" rel="noopener">🎮 Roblox</a>`  : '',
-      p.discord ? `<a href="${p.discord}" target="_blank" rel="noopener">💬 Discord</a>` : ''
-    ].filter(Boolean).join('\n  ');
-    return `<li>
-  <span>Project ${num}</span>
-  <span>${p.status.charAt(0).toUpperCase()+p.status.slice(1)}</span>
-  <h3>${p.name}</h3>
-  <p>${p.desc}</p>
-  ${links}
-</li>`;
-  }).join('\n\n');
-
-  // Gallery HTML
-  document.getElementById('exportGallery').textContent = state.gallery.map((img, i) =>
-    `<img src="${img.src}" alt="Project screenshot ${i+1}" />`
-  ).join('\n');
-
-  // About HTML
-  document.getElementById('exportAbout').textContent =
-`<p>${state.bio.text}</p>`;
-}
-
-function copyExport(id) {
-  const text = document.getElementById(id).textContent;
-  navigator.clipboard.writeText(text).then(() => toast('Copied to clipboard!', 'success'));
-}
-
-/* ============================================================
-   STATS
-============================================================ */
-function updateStats() {
-  document.getElementById('stat-projects').textContent = state.projects.length;
-  document.getElementById('stat-gallery').textContent = state.gallery.length;
-  document.getElementById('stat-skills').textContent = state.skills.length;
-  document.getElementById('stat-goals').textContent = state.goals.length;
-}
-
-/* ============================================================
-   ACTIVITY LOG
-============================================================ */
-function addLog(type, text) {
-  const now = new Date();
-  const time = now.toLocaleTimeString('de-AT', { hour:'2-digit', minute:'2-digit' });
-  state.log.unshift({ type, text, time });
-  if (state.log.length > 50) state.log.pop();
-  saveState();
-}
-
-function renderLog(containerId, limit) {
-  const container = document.getElementById(containerId);
-  if (!container) return;
-  const items = limit ? state.log.slice(0, limit) : state.log;
-  if (!items.length) {
-    container.innerHTML = '<p style="color:var(--muted);font-size:0.85rem;padding:8px 0;">No activity yet.</p>';
-    return;
-  }
-  container.innerHTML = items.map(l => `
-    <div class="log-item">
-      <div class="log-dot ${l.type}"></div>
-      <div class="log-text">${escHtml(l.text)}</div>
-      <div class="log-time">${l.time}</div>
-    </div>
-  `).join('');
-}
-
-function clearLog() {
-  confirmAction('Clear all activity logs?', () => {
-    state.log = [];
-    saveState();
-    renderLog('dashLog', 5);
-    renderLog('fullLog');
-    toast('Log cleared', 'info');
-  });
-}
-
-/* ============================================================
-   MODALS & CONFIRMS
-============================================================ */
-function closeModal(id) { document.getElementById(id).classList.remove('open'); }
-
-function confirmAction(text, cb) {
-  document.getElementById('confirmText').textContent = text;
-  confirmCallback = cb;
-  document.getElementById('confirmOverlay').classList.add('open');
-  document.getElementById('confirmBtn').onclick = () => { cb(); closeConfirm(); };
-}
-
-function closeConfirm() { document.getElementById('confirmOverlay').classList.remove('open'); }
-
-/* ============================================================
-   RESET / CLEAR
-============================================================ */
-function resetAll() {
-  localStorage.removeItem(STORAGE_KEY);
-  toast('Data reset. Reloading…', 'info');
-  setTimeout(() => location.reload(), 1200);
-}
-
-function clearGallery() {
-  state.gallery = [];
-  saveState(); renderGallery(); updateStats();
-  addLog('del', 'Cleared all gallery images');
-  renderLog('dashLog',5); renderLog('fullLog');
-  toast('Gallery cleared', 'info');
-}
-
-function clearProjects() {
-  state.projects = [];
-  saveState(); renderProjects(); updateStats();
-  addLog('del', 'Cleared all projects');
-  renderLog('dashLog',5); renderLog('fullLog');
-  toast('Projects cleared', 'info');
-}
-
-/* ============================================================
-   TOAST
-============================================================ */
-function toast(msg, type = 'info') {
-  const icons = { success:'✅', error:'❌', info:'ℹ️' };
-  const el = document.createElement('div');
-  el.className = `toast ${type}`;
-  el.innerHTML = `<span class="toast-icon">${icons[type]}</span>${escHtml(msg)}`;
-  document.getElementById('toastContainer').appendChild(el);
-  setTimeout(() => el.remove(), 3000);
-}
-
-/* ============================================================
-   SESSION TIMER
-============================================================ */
-function startSessionTimer() {
-  const start = Date.now();
-  setInterval(() => {
-    const secs = Math.floor((Date.now() - start) / 1000);
-    const m = String(Math.floor(secs/60)).padStart(2,'0');
-    const s = String(secs % 60).padStart(2,'0');
-    document.getElementById('sessionTime').textContent = `Session ${m}:${s}`;
-  }, 1000);
-}
-
-/* ============================================================
-   LOGOUT
-============================================================ */
-function logout() {
-  document.getElementById('app').classList.remove('visible');
-  document.getElementById('app').style.display = 'none';
-  const ls = document.getElementById('lockScreen');
-  ls.style.display = 'flex';
-  ls.style.opacity = '1';
-  pinBuffer = '';
-  updateDots();
-  toast('Logged out', 'info');
-}
-
-/* ============================================================
-   UTILS
-============================================================ */
-function escHtml(s) {
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
+// ── UTILS ────────────────────────────────────
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function toggleTokenVis(inputId,btn){const el=document.getElementById(inputId);el.type=el.type==='password'?'text':'password';btn.textContent=el.type==='password'?'👁':'🙈';}
 </script>
 </body>
 </html>
