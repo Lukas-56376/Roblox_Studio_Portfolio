@@ -787,32 +787,47 @@ async function deployToGitHub(){
 // ── HTML BUILDER ─────────────────────────────
 function buildIndexHTML(){
   const {bio,projects,gallery,skills,systems,goals,settings}=state;
-
   const statusLabel={available:'Available for Projects',busy:'Currently Busy',open:'Open to Collabs'};
 
+  // Projects — uses .project-card, .project-number, .project-status, .link-chip
   const projectsHTML=projects.map((p,i)=>{
     const num=String(i+1).padStart(2,'0');
+    const statusClass=p.status==='live'?'status-live':'status-unreleased';
+    const statusText=p.status==='wip'?'Work In Progress':p.status.charAt(0).toUpperCase()+p.status.slice(1);
     const links=[
-      p.youtube?`<a href="${p.youtube}" target="_blank" rel="noopener">▶ YouTube</a>`:'',
-      p.roblox?`<a href="${p.roblox}" target="_blank" rel="noopener">🎮 Roblox</a>`:'',
-      p.discord?`<a href="${p.discord}" target="_blank" rel="noopener">💬 Discord</a>`:''
-    ].filter(Boolean).join('\n        ');
-    return `      <li>
-        ${settings.projNums?`<span>Project ${num}</span>`:''}
-        <span>${p.status.charAt(0).toUpperCase()+p.status.slice(1)}</span>
+      p.youtube?`<a href="${p.youtube}" target="_blank" rel="noopener" class="link-chip">▶ YouTube</a>`:'',
+      p.roblox?`<a href="${p.roblox}" target="_blank" rel="noopener" class="link-chip">🎮 Play on Roblox</a>`:'',
+      p.discord?`<a href="${p.discord}" target="_blank" rel="noopener" class="link-chip">💬 Discord</a>`:''
+    ].filter(Boolean).join('\n          ');
+    return `      <div class="project-card reveal">
+        ${settings.projNums?`<div class="project-number">Project ${num}</div>`:''}
+        <span class="project-status ${statusClass}">${statusText}</span>
         <h3>${esc(p.name)}</h3>
         <p>${esc(p.desc)}</p>
-        ${links}
-      </li>`;
+        <div class="project-links">
+          ${links}
+        </div>
+      </div>`;
   }).join('\n');
 
+  // Gallery — uses .gallery-item, opens lightbox
   const galleryHTML=gallery.map((img,i)=>
-    `      <img src="${img.src}" alt="Project screenshot ${i+1}" />`
+    `      <div class="gallery-item reveal" onclick="openLightbox('${img.src}')">
+        <img src="${img.src}" alt="Project screenshot ${i+1}" loading="lazy" />
+      </div>`
   ).join('\n');
 
-  const skillsHTML=skills.map(s=>`      <p>${esc(s)}</p>`).join('\n');
-  const systemsHTML=`      <p>${systems.map(s=>esc(s)).join(' • ')}</p>`;
-  const goalsHTML=goals.map(g=>`      <p>✦ ${esc(g)}</p>`).join('\n');
+  // Skills — uses .skill-item inside .skill-list
+  const skillsHTML=skills.map(s=>`            <div class="skill-item">${esc(s)}</div>`).join('\n');
+
+  // Systems — uses .system-tag inside .system-tags
+  const systemsHTML=systems.map(s=>`            <span class="system-tag">${esc(s)}</span>`).join('\n');
+
+  // Goals — uses .goal-item with .goal-icon
+  const goalsHTML=goals.map((g,i)=>`          <div class="goal-item reveal">
+            <div class="goal-icon">${String.fromCodePoint(0x2756)}</div>
+            <span>${esc(g)}</span>
+          </div>`).join('\n');
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -820,57 +835,116 @@ function buildIndexHTML(){
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>LUK.DEVX</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Syne:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <header>
-    <nav>
-      <a href="#about">About</a>
-      <a href="#projects">Projects</a>
-      <a href="#gallery">Gallery</a>
-      <a href="#skills">Skills</a>
-      <a href="#goals">Goals</a>
-    </nav>
-    ${settings.availability?`<span>${statusLabel[bio.status]||'Available for Projects'}</span>`:''}
-  </header>
 
-  <h1>Roblox Studio Developer</h1>
-
-  <section id="about">
-    <h2>Who Am I</h2>
-    <p>${esc(bio.text)}</p>
-    <a href="${esc(bio.discord)}" target="_blank" rel="noopener">↗ Contact on Discord</a>
-  </section>
-
-  <section id="projects">
-    <h2>My Work</h2>
-    <ul>
-${projectsHTML}
+  <nav>
+    <div class="nav-logo">LUK<span>.</span>DEVX</div>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#gallery">Gallery</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#goals">Goals</a></li>
     </ul>
+  </nav>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-badge">${settings.availability?statusLabel[bio.status]||'Available for Projects':'Open to Opportunities'}</div>
+    <h1>Roblox Studio<br/><span class="highlight">Developer</span></h1>
+    <p class="hero-sub">Hey, I'm ${esc(bio.name)} — a motivated developer building immersive Roblox experiences.<br/>${esc(bio.exp)} in and always learning, always creating.</p>
+    <div class="hero-cta">
+      <a href="${esc(bio.discord)}" target="_blank" rel="noopener" class="btn btn-primary">↗ Contact on Discord</a>
+      <a href="#projects" class="btn btn-ghost">View Projects</a>
+    </div>
+  </div>
+
+  <!-- ABOUT -->
+  <section id="about" class="reveal">
+    <div class="section-label">01 / About</div>
+    <h2 class="section-title">Who I Am</h2>
+    <div class="about-card">
+      <p>${esc(bio.text)}</p>
+    </div>
   </section>
 
+  <!-- PROJECTS -->
+  <section id="projects">
+    <div class="section-label">02 / Projects</div>
+    <h2 class="section-title">My Work</h2>
+    <div class="projects-grid">
+${projectsHTML}
+    </div>
+  </section>
+
+  <!-- GALLERY -->
   <section id="gallery">
-    <h2>Screenshots</h2>
+    <div class="section-label">03 / Gallery</div>
+    <h2 class="section-title">Screenshots</h2>
+    <div class="gallery-grid">
 ${galleryHTML}
+    </div>
   </section>
 
+  <!-- SKILLS -->
   <section id="skills">
-    <h2>Capabilities</h2>
-    <h3>Core Skills</h3>
+    <div class="section-label">04 / Skills</div>
+    <h2 class="section-title">Capabilities</h2>
+    <div class="skills-layout">
+      <div class="skills-group">
+        <h3>Core Skills</h3>
+        <div class="skill-list">
 ${skillsHTML}
-    <h3>Systems Setup</h3>
+        </div>
+      </div>
+      <div class="skills-group">
+        <h3>Systems Setup</h3>
+        <div class="system-tags">
 ${systemsHTML}
+        </div>
+      </div>
+    </div>
   </section>
 
+  <!-- GOALS -->
   <section id="goals">
-    <h2>Where I'm Headed</h2>
+    <div class="section-label">05 / Goals</div>
+    <h2 class="section-title">Where I'm Headed</h2>
+    <div class="goals-card">
+      <div class="goals-list">
 ${goalsHTML}
+      </div>
+    </div>
   </section>
 
+  <!-- FOOTER -->
   <footer>
-    <p>LUK.DEVX — Roblox Studio Portfolio</p>
-    <p>© ${bio.name} Roblox Portfolio</p>
+    <div class="footer-logo">LUK.DEVX — Roblox Studio Portfolio</div>
+    <div class="footer-copy">© ${esc(bio.name)} Roblox Portfolio</div>
   </footer>
+
+  <!-- LIGHTBOX -->
+  <div class="lightbox" id="lightbox" onclick="closeLightbox()">
+    <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+    <img id="lightboxImg" src="" alt="Gallery image" />
+  </div>
+
+  <script>
+    // Lightbox
+    function openLightbox(src){const l=document.getElementById('lightbox');document.getElementById('lightboxImg').src=src;l.classList.add('active');}
+    function closeLightbox(){document.getElementById('lightbox').classList.remove('active');}
+    document.addEventListener('keydown',e=>{if(e.key==='Escape')closeLightbox();});
+
+    // Reveal on scroll
+    const reveals=document.querySelectorAll('.reveal');
+    const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);}});},{threshold:0.12});
+    reveals.forEach(r=>obs.observe(r));
+  <\/script>
 </body>
 </html>`;
 }
