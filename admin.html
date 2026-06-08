@@ -567,7 +567,7 @@
     <div class="form-group"><label class="form-label">Project Name</label><input class="form-input" id="pName" placeholder="e.g. US Air Force Base" /></div>
     <div class="form-group"><label class="form-label">Short Description</label><textarea class="form-textarea" id="pDesc" rows="3" placeholder="Brief description…"></textarea></div>
     <div class="form-row">
-      <div class="form-group"><label class="form-label">Status</label><select class="form-select" id="pStatus"><option value="live">Live</option><option value="unreleased">Unreleased</option><option value="wip">Work In Progress</option></select></div>
+      <div class="form-group"><label class="form-label">Status</label><select class="form-select" id="pStatus"><option value="live">🟢 Live</option><option value="unreleased">🔴 Unreleased</option><option value="wip">🟡 Work In Progress</option><option value="coming-soon">🔵 Coming Soon</option><option value="beta">🟣 Beta</option><option value="on-hold">🟠 On Hold</option><option value="concept">⚪ Concept</option></select></div>
       <div class="form-group"><label class="form-label">Platform</label><select class="form-select" id="pPlatform"><option value="roblox">Roblox</option><option value="youtube">YouTube</option><option value="both">Both</option><option value="none">None</option></select></div>
     </div>
     <div class="form-group"><label class="form-label">Roblox Link</label><input class="form-input" id="pRoblox" placeholder="https://www.roblox.com/…" /></div>
@@ -791,8 +791,9 @@ function buildIndexHTML(){
 
   const projectsHTML=projects.map((p,i)=>{
     const num=String(i+1).padStart(2,'0');
-    const statusClass=p.status==='live'?'status-live':'status-unreleased';
-    const statusText=p.status==='wip'?'Work In Progress':p.status==='live'?'Live':'Unreleased';
+    const statusClass='status-'+p.status;
+    const statusLabels={'live':'Live','unreleased':'Unreleased','wip':'Work In Progress','coming-soon':'Coming Soon','beta':'Beta','on-hold':'On Hold','concept':'Concept'};
+    const statusText=statusLabels[p.status]||p.status;
     const links=[];
     if(p.youtube)links.push(`          <a href="${p.youtube}" target="_blank" class="link-chip">▶ YouTube</a>`);
     if(p.roblox) links.push(`          <a href="${p.roblox}" target="_blank" class="link-chip">🎮 Roblox</a>`);
@@ -990,7 +991,7 @@ function renderProjects(){
         <div class="project-name">${esc(p.name)}</div>
         <div class="project-desc">${esc(p.desc)}</div>
         <div class="project-tags">
-          <span class="tag tag-${p.status}">${p.status.toUpperCase()}</span>
+          <span class="tag tag-${p.status}">${({'live':'🟢 LIVE','unreleased':'🔴 UNRELEASED','wip':'🟡 WIP','coming-soon':'🔵 COMING SOON','beta':'🟣 BETA','on-hold':'🟠 ON HOLD','concept':'⚪ CONCEPT'})[p.status]||p.status.toUpperCase()}</span>
           ${p.roblox?'<span class="tag tag-live">🎮 Roblox</span>':''}
           ${p.youtube?'<span class="tag tag-wip">▶ YouTube</span>':''}
           ${p.discord?'<span class="tag tag-wip">💬 Discord</span>':''}
