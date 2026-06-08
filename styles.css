@@ -261,8 +261,6 @@ section {
   position: relative;
   overflow: hidden;
 }
-
-/* FIX: pointer-events: none verhindert, dass das Overlay Klicks blockiert */
 .project-card::after {
   content: '';
   position: absolute;
@@ -288,26 +286,79 @@ section {
   text-transform: uppercase;
   margin-bottom: 16px;
 }
+
+/* ══════════════════════════════════════════
+   PROJECT STATUS BADGES — alle Farben
+══════════════════════════════════════════ */
 .project-status {
   display: inline-block;
   font-size: 0.65rem;
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  padding: 3px 10px;
+  padding: 4px 11px;
   border-radius: 100px;
   margin-bottom: 12px;
 }
+
+/* 🟢 Live — Grün */
+.status-live {
+  background: rgba(0, 220, 100, 0.12);
+  color: #00dc64;
+  border: 1px solid rgba(0, 220, 100, 0.3);
+  box-shadow: 0 0 10px rgba(0, 220, 100, 0.12);
+}
+
+/* 🔴 Unreleased — Rot */
 .status-unreleased {
   background: rgba(255, 75, 110, 0.12);
-  color: var(--accent-2);
-  border: 1px solid rgba(255, 75, 110, 0.25);
+  color: #ff4b6e;
+  border: 1px solid rgba(255, 75, 110, 0.3);
+  box-shadow: 0 0 10px rgba(255, 75, 110, 0.12);
 }
-.status-live {
-  background: rgba(0, 220, 100, 0.1);
-  color: #00dc64;
-  border: 1px solid rgba(0, 220, 100, 0.25);
+
+/* 🟡 Work In Progress — Gelb */
+.status-wip {
+  background: rgba(245, 180, 0, 0.12);
+  color: #f5b400;
+  border: 1px solid rgba(245, 180, 0, 0.3);
+  box-shadow: 0 0 10px rgba(245, 180, 0, 0.12);
 }
+
+/* 🔵 Coming Soon — Cyan/Blau */
+.status-coming-soon {
+  background: rgba(0, 180, 255, 0.12);
+  color: #00b4ff;
+  border: 1px solid rgba(0, 180, 255, 0.3);
+  box-shadow: 0 0 10px rgba(0, 180, 255, 0.12);
+}
+
+/* 🟣 Beta — Lila */
+.status-beta {
+  background: rgba(139, 92, 246, 0.12);
+  color: #a78bfa;
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  box-shadow: 0 0 10px rgba(139, 92, 246, 0.12);
+}
+
+/* 🟠 On Hold — Orange */
+.status-on-hold {
+  background: rgba(251, 115, 0, 0.12);
+  color: #fb7300;
+  border: 1px solid rgba(251, 115, 0, 0.3);
+  box-shadow: 0 0 10px rgba(251, 115, 0, 0.12);
+}
+
+/* ⚪ Concept — Grau */
+.status-concept {
+  background: rgba(100, 116, 139, 0.12);
+  color: #94a3b8;
+  border: 1px solid rgba(100, 116, 139, 0.3);
+  box-shadow: 0 0 10px rgba(100, 116, 139, 0.10);
+}
+
+/* ══════════════════════════════════════════ */
+
 .project-card h3 {
   font-family: 'Orbitron', sans-serif;
   font-size: 1.05rem;
@@ -321,8 +372,6 @@ section {
   margin-bottom: 22px;
   line-height: 1.6;
 }
-
-/* FIX: z-index: 2 stellt sicher, dass Links über dem Overlay liegen */
 .project-links {
   display: flex;
   gap: 10px;
